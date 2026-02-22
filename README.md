@@ -1,73 +1,82 @@
-# React + TypeScript + Vite
+🚀 Gmate | The Next-Gen Productivity Platform
+Gmate is a high-performance project management and productivity tool—engineered for teams who need the power of Jira with the speed of a modern tech stack.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Built with React, TypeScript, and Vite, Gmate focuses on streamlined workflows, task visualization, and seamless team collaboration.
 
-Currently, two official plugins are available:
+🛠️ Tech Stack
+Core: React 18 + Vite (Lightning-fast HMR)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Type Safety: TypeScript
 
-## React Compiler
+Styling: Tailwind CSS
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Design System: Shadcn/ui (Radix UI primitives)
 
-## Expanding the ESLint configuration
+Icons: Lucide React & React Icons
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Routing: React Router Dom v6
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+State Management: Zustand
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+✨ Key Features
+Interactive Dashboard: Real-time overview of task statuses (To Do, In Progress, Completed).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Project Hub: Comprehensive grid view for managing multiple projects with progress tracking.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Task Management: Granular task control with priority badges and deadline tracking.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Modern Layout: Responsive Sidebar and Navigation built for professional productivity.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Theme Support: Optimized for readability and focus.
+
+📂 Architecture
+Bash
+src/
+├── components/      # Reusable Logic (Sidebar, Layout, Task Cards)
+│   └── ui/          # Atomic Shadcn components (Buttons, Progress, etc.)
+├── pages/           # High-level views (Dashboard, Projects)
+├── lib/             # Utilities (Tailwind merge, formatting)
+├── App.tsx          # Central Routing System
+└── main.tsx         # Entry point
+⚙️ Development Setup
+Prerequisites
+Node.js (v18+)
+
+npm
+
+Quick Start
+Clone with SSH:
+
+Bash
+git clone git@github.com:algoharyx-org/Gmate-Frontend.git
+cd Gmate-Frontend
+Install Dependencies:
+
+Bash
+npm install
+Launch Local Dev Server:
+
+Bash
+npm run dev
+🔧 Maintenance & Fixes (Team Log)
+As part of our commitment to code quality, the following improvements were implemented:
+
+Linux Compatibility: Standardized all imports to PascalCase for case-sensitive file systems (Arch Linux/Production).
+
+Router Integration: Migrated to react-router-dom for true single-page application navigation.
+
+Build Stability: Resolved TypeScript export conflicts and optimized the build pipeline.
+
+Dependency Sync: Integrated missing react-icons and shadcn components into the primary build.
+
+🤝 Contribution
+Check out a new branch: git checkout -b feature/amazing-feature
+
+Commit your logic: git commit -m "feat: add Jira-style kanban board"
+
+Push: git push origin feature/amazing-feature
+
+Open a Pull Request.
+
+👤 Maintainer
+**Gmate Team** (algoharyx)
