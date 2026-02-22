@@ -1,8 +1,19 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Layout from "@/components/Layout";
+import Dashboard from "@/pages/Dashboard";
+import Projects from "@/pages/Projects";
+
 const App = () => {
   return (
-    <div className="bg-background text-primary flex h-screen flex-col items-center justify-center text-center text-2xl font-bold">
-      <h1>GMATE</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="projects" element={<Projects />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 };
 
