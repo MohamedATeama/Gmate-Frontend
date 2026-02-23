@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CiSearch } from "react-icons/ci";
+import { Search } from "lucide-react";
 import TaskCard from "@/components/TaskCard";
 import { tasks } from "@/data/tasks";
 import Empty from "@/components/Empty";
@@ -21,7 +21,7 @@ function MainTaskDashboard() {
 
         <div className="border-border bg-background relative w-full rounded-lg border p-1 shadow-sm backdrop-blur-sm sm:max-w-md">
           <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center sm:left-4">
-            <CiSearch className="h-4 w-4 sm:h-6 sm:w-6" />
+            <Search className="h-4 w-4 sm:h-6 sm:w-6" />
           </span>
           <input
             type="search"

@@ -1,7 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import MainTaskDashboard from "./pages/MainTaskDashboard";
 import MainLayout from "./Layouts/MainLayout";
-import TaskDetails from "./pages/TaskDetails";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";

@@ -1,6 +1,5 @@
-import { IoPersonOutline } from "react-icons/io5";
 import ThemeToggle from "./ThemeToggle";
-import { HiOutlineLogout } from "react-icons/hi";
+import { CircleUser, LogOut } from "lucide-react";
 
 export default function HeadView() {
   return (
@@ -18,13 +17,13 @@ export default function HeadView() {
         </div>
         <ul className="flex items-center gap-3 sm:gap-4">
           <li>
-            <IoPersonOutline className="text-muted-foreground hover:text-foreground size-5 cursor-pointer transition-colors sm:size-6" />
+            <CircleUser className="text-muted-foreground hover:text-foreground size-5 cursor-pointer transition-colors sm:size-6" />
           </li>
           <li>
             <ThemeToggle />
           </li>
           <li>
-            <HiOutlineLogout className="text-muted-foreground hover:text-foreground size-5 cursor-pointer transition-colors sm:size-6" />
+            <LogOut className="text-muted-foreground hover:text-foreground size-5 cursor-pointer transition-colors sm:size-6" />
           </li>
         </ul>
       </div>
