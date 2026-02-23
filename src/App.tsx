@@ -1,20 +1,33 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Layout from "@/components/Layout";
-import Dashboard from "@/pages/Dashboard";
-import Projects from "@/pages/Projects";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import MainLayout from "./Layouts/MainLayout";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import { ThemeProvider } from "./context/ThemeContext";
+import DashboardLayout from "./Layouts/DashboardLayout";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import MyTasksPage from "./pages/dashboard/MyTasksPage";
+import ProjectsPage from "./pages/dashboard/ProjectsPage";
+import NotFound from "./pages/NotFound";
 
-const App = () => {
+export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="projects" element={<Projects />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+          </Route>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="my-tasks" element={<MyTasksPage />} />
+            <Route path="projects" element={<ProjectsPage />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
-};
-
-export default App;
+}
