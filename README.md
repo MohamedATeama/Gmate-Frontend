@@ -1,73 +1,41 @@
-# React + TypeScript + Vite
+# 🚀 Gmate | The Next-Gen Productivity Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Gmate** is a high-performance project management and productivity tool—engineered for teams who need the power of **Jira** with the speed of a modern tech stack.
 
-Currently, two official plugins are available:
+Built with **React**, **TypeScript**, and **Vite**, Gmate focuses on streamlined workflows, task visualization, and seamless team collaboration.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Core:** [React 19](https://reactjs.org/) + [Vite](https://vitejs.dev/) (Lightning-fast HMR)
+- **Type Safety:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Design System:** [Shadcn/ui](https://ui.shadcn.com/) (Radix UI primitives)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Routing:** [React Router Dom v6](https://reactrouter.com/)
+- **State Management:** [Zustand](https://docs.pmnd.rs/zustand/)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✨ Key Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Interactive Dashboard:** Real-time overview of task statuses (To Do, In Progress, Completed).
+- **Project Hub:** Comprehensive grid view for managing multiple projects with progress tracking.
+- **Task Management:** Granular task control with priority badges and deadline tracking.
+- **Modern Layout:** Responsive Sidebar and Navigation built for professional productivity.
+- **Theme Support:** Optimized for readability and focus.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📂 Architecture
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+src/
+├── components/      # Reusable Logic (Sidebar, Layout, Task Cards)
+│   └── ui/          # Atomic Shadcn components (Buttons, Progress, etc.)
+├── pages/           # High-level views (Dashboard, Projects)
+├── lib/             # Utilities (Tailwind merge, formatting)
+├── App.tsx          # Central Routing System
+└── main.tsx         # Entry point
 ```

@@ -1,15 +1,35 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainTaskDashboard from "./pages/MainTaskDashboard";
-import MainLayout from "./pages/MainLayout";
+import MainLayout from "./Layouts/MainLayout";
+import TaskDetails from "./pages/TaskDetails";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import { ThemeProvider } from "./context/ThemeContext";
+import DashboardLayout from "./Layouts/DashboardLayout";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import MyTasksPage from "./pages/dashboard/MyTasksPage";
+import ProjectsPage from "./pages/dashboard/ProjectsPage";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<MainTaskDashboard />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+          </Route>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="my-tasks" element={<MyTasksPage />} />
+            <Route path="projects" element={<ProjectsPage />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 }

@@ -1,15 +1,6 @@
 import { CalendarDays } from "lucide-react";
-
-type TaskStatus = "important" | "inProgress" | "upcoming" | "completed";
-
-type TaskCard = {
-  id: number;
-  title: string;
-  description: string;
-  status: TaskStatus;
-  tag: string;
-  date: string;
-};
+import { Link } from "react-router-dom";
+import type { TaskStatus, Task } from "@/data/tasks";
 
 const getStatusStyles = (status: TaskStatus) => {
   switch (status) {
@@ -26,7 +17,7 @@ const getStatusStyles = (status: TaskStatus) => {
   }
 };
 
-export default function TaskCard({ task }: { task: TaskCard }) {
+export default function TaskCard({ task }: { task: Task }) {
   return (
     <article
       key={task.id}
@@ -35,7 +26,7 @@ export default function TaskCard({ task }: { task: TaskCard }) {
       <div className="flex items-start justify-between gap-2 sm:gap-3">
         <div className="min-w-0 space-y-1 flex-1">
           <span
-            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-[0.1em] uppercase sm:px-2.5 sm:text-xs sm:tracking-[0.15em] ${getStatusStyles(
+            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-widest uppercase sm:px-2.5 sm:text-xs sm:tracking-[0.15em] ${getStatusStyles(
               task.status,
             )}`}
           >
@@ -55,9 +46,12 @@ export default function TaskCard({ task }: { task: TaskCard }) {
           <CalendarDays className="text-muted-foreground/80 h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" />
           <span className="truncate">{task.date}</span>
         </p>
-        <button className="text-primary hover:text-primary/80 cursor-pointer text-[10px] font-semibold transition-colors sm:text-xs">
+        <Link
+          to={`/dashboard/tasks/${task.id}`}
+          className="text-primary hover:text-primary/80 cursor-pointer text-[10px] font-semibold transition-colors sm:text-xs"
+        >
           View details
-        </button>
+        </Link>
       </div>
     </article>
   );

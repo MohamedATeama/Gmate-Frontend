@@ -186,6 +186,20 @@
   }
 }
 
+@layer utilities {
+  .inputBase {
+    @apply border-input bg-background placeholder:text-muted-foreground w-full rounded-xl border px-4 py-3 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 aria-invalid:border-destructive aria-invalid:ring-destructive/20
+  }
+
+  .active {
+    @apply text-foreground
+  }
+
+  .navLinkClass {
+    @apply hover:text-foreground transition-colors
+  }
+}
+
 ::selection {
   @apply bg-primary text-primary-foreground;
 }
