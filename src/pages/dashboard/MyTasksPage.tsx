@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TaskCard from "@/components/TaskCard";
 import Empty from "@/components/Empty";
 import { useTasks } from "@/context/TasksContext";
 import type { TaskStatus } from "@/data/tasks";
+import AddTaskModal from "@/components/AddTaskModal";
 
 const statusFilterOptions: { value: TaskStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -19,6 +19,7 @@ export default function MyTasksPage() {
   const { tasks: taskList } = useTasks();
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
 
   const filtered = taskList.filter((task) => {
     const matchStatus =
@@ -98,7 +99,7 @@ export default function MyTasksPage() {
         </div>
 
         {isEmpty ? (
-          <Empty addTaskHref="/dashboard/my-tasks/add" />
+          <Empty onAdd={() => setIsAdding(true)} />
         ) : filtered.length === 0 ? (
           <div className="border-border bg-card flex flex-col items-center justify-center rounded-2xl border border-dashed py-12 text-center">
             <p className="text-muted-foreground text-sm">
@@ -122,9 +123,10 @@ export default function MyTasksPage() {
               <TaskCard key={task.id} task={task} />
             ))}
 
-            <Link
-              to="/dashboard/my-tasks/add"
-              className="border-muted-foreground/40 bg-muted/40 hover:bg-muted/60 flex min-h-[140px] cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed p-4 text-center transition-colors sm:min-h-[160px] md:min-h-[180px]"
+            <button
+              type="button"
+              onClick={() => setIsAdding(true)}
+              className="border-muted-foreground/40 bg-muted/40 hover:bg-muted/60 flex min-h-35 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed p-4 text-center transition-colors sm:min-h-40 md:min-h-45"
             >
               <div className="bg-background text-primary mb-2 flex h-10 w-10 items-center justify-center rounded-2xl shadow-sm transition-transform hover:scale-110 sm:mb-3 sm:h-12 sm:w-12">
                 <span className="text-xl leading-none sm:text-2xl">+</span>
@@ -138,9 +140,11 @@ export default function MyTasksPage() {
               <span className="bg-primary text-primary-foreground hover:bg-primary/90 mt-2 inline-flex h-8 items-center justify-center rounded-full px-3 text-[11px] font-medium shadow-sm sm:mt-3 sm:px-4 sm:text-xs">
                 + Add Task
               </span>
-            </Link>
+            </button>
           </div>
         )}
+
+        {isAdding && <AddTaskModal onClose={() => setIsAdding(false)} />}
       </section>
     </div>
   );
