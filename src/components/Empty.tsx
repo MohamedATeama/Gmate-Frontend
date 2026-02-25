@@ -4,9 +4,10 @@ import { Button } from "./ui/button";
 
 interface EmptyProps {
   addTaskHref?: string;
+  onAdd?: () => void;
 }
 
-export default function Empty({ addTaskHref }: EmptyProps) {
+export default function Empty({ addTaskHref, onAdd }: EmptyProps) {
   return (
     <div className="bg-card border-border mt-6 flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center shadow-sm sm:py-20 md:py-24">
       <div className="bg-primary/10 mb-5 rounded-full p-5">
@@ -19,7 +20,15 @@ export default function Empty({ addTaskHref }: EmptyProps) {
         You haven't created any tasks for this week. Start organizing your work
         by adding a new task.
       </p>
-      {addTaskHref ? (
+      {onAdd ? (
+        <Button
+          className="mt-8 rounded-full px-6 py-2.5 text-sm font-bold shadow-sm transition-all hover:scale-105"
+          size="default"
+          onClick={onAdd}
+        >
+          + Add New Task
+        </Button>
+      ) : addTaskHref ? (
         <Button
           className="mt-8 rounded-full px-6 py-2.5 text-sm font-bold shadow-sm transition-all hover:scale-105"
           size="default"
