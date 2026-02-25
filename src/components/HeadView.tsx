@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import { BellRing, LogOut } from "lucide-react";
+import { Badge } from "./ui/badge";
 
 export default function HeadView() {
   return (
@@ -18,12 +19,17 @@ export default function HeadView() {
         </Link>
         <ul className="flex items-center gap-3 sm:gap-4">
           <li>
-            <button className="hover:bg-accent w-fit rounded-md p-2 transition-colors">
+            <button className="relative hover:bg-accent w-fit rounded-md p-2 transition-colors">
               <Link
-                to="/dashboard/notification"
-                // className="text-muted-foreground hover:text-foreground transition-colors"
+                to="/dashboard/notifications"
               >
                 <BellRing className="h-5 w-5" />
+                <Badge
+                  variant="destructive"
+                  className="absolute top-1 right-1 p-0 w-2.5 h-2.5 rounded-full"
+                >
+                  
+                </Badge>
               </Link>
             </button>
           </li>

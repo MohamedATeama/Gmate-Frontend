@@ -12,8 +12,11 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgetPassword from "./pages/ForgetPassword";
+import ProfilePage from "./pages/dashboard/ProfilePage";
+import EditProfilePage from "./pages/dashboard/EditProfilePage";
 import { TasksProvider } from "./context/TasksContext";
 import TaskDetails from "./pages/TaskDetails";
+import NotificationsPage from "./pages/dashboard/NotificationsPage";
 
 export default function App() {
   return (
@@ -33,6 +36,9 @@ export default function App() {
             <Route path="my-tasks" element={<MyTasksPage />} />
             <Route path="tasks/:id" element={<TaskDetails />} />
             <Route path="projects" element={<ProjectsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="profile/edit" element={<EditProfilePage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

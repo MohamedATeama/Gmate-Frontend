@@ -10,6 +10,7 @@ import { tasks as initialTasks, type Task } from "@/data/tasks";
 type TasksContextValue = {
   tasks: Task[];
   addTask: (task: Omit<Task, "id">) => void;
+  updateTask: (id: number, updates: Partial<Omit<Task, "id">>) => void;
 };
 
 const TasksContext = createContext<TasksContextValue | null>(null);
@@ -25,8 +26,17 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const updateTask = useCallback(
+    (id: number, updates: Partial<Omit<Task, "id">>) => {
+      setTasks((prev) =>
+        prev.map((task) => (task.id === id ? { ...task, ...updates } : task)),
+      );
+    },
+    [],
+  );
+
   return (
-    <TasksContext.Provider value={{ tasks, addTask }}>
+    <TasksContext.Provider value={{ tasks, addTask, updateTask }}>
       {children}
     </TasksContext.Provider>
   );
