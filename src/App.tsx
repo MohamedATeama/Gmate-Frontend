@@ -15,36 +15,44 @@ import ForgetPassword from "./pages/ForgetPassword";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import EditProfilePage from "./pages/dashboard/EditProfilePage";
 import { TasksProvider } from "./context/TasksContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import TaskDetails from "./pages/TaskDetails";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
 import TeamPage from "./pages/dashboard/TeamPage";
+import TimelinePage from "./pages/dashboard/TimelinePage";
+
+import ProjectDetailsPage from "./pages/dashboard/ProjectDetailsPage";
 
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forget-password" element={<ForgetPassword />} />
-          <Route element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-          </Route>
-          <Route path="/dashboard" element={<TasksProvider><DashboardLayout /></TasksProvider>}>
-            <Route index element={<DashboardPage />} />
-            <Route path="my-tasks" element={<MyTasksPage />} />
-            <Route path="tasks/:id" element={<TaskDetails />} />
-            <Route path="projects" element={<ProjectsPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="profile/edit" element={<EditProfilePage />} />
-            <Route path="notifications" element={<NotificationsPage />} />
-            <Route path="team" element={<TeamPage />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <NotificationProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
+            <Route element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+            </Route>
+            <Route path="/dashboard" element={<TasksProvider><DashboardLayout /></TasksProvider>}>
+              <Route index element={<DashboardPage />} />
+              <Route path="my-tasks" element={<MyTasksPage />} />
+              <Route path="tasks/:id" element={<TaskDetails />} />
+              <Route path="projects" element={<ProjectsPage />} />
+              <Route path="projects/:id" element={<ProjectDetailsPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="profile/edit" element={<EditProfilePage />} />
+              <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="team" element={<TeamPage />} />
+              <Route path="timeline" element={<TimelinePage />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </NotificationProvider>
     </ThemeProvider>
   );
 }

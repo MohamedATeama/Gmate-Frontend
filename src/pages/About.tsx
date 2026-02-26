@@ -1,149 +1,91 @@
-import { Link } from "react-router-dom";
-
-const values = [
-  {
-    title: "Clarity",
-    description:
-      "Every task has an owner, a deadline, and a place in the bigger picture.",
-  },
-  {
-    title: "Efficiency",
-    description:
-      "Spend less time in meetings and more time getting work done.",
-  },
-  {
-    title: "Collaboration",
-    description: "Stay in sync with your team without the noise.",
-  },
-];
+import { 
+  Zap, 
+  Target, 
+  Users, 
+  Rocket, 
+  ShieldCheck, 
+  Cpu 
+} from "lucide-react";
 
 export default function About() {
   return (
-    <>
-      <section className="border-border bg-muted/30 border-b py-12 sm:py-16 lg:py-20">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div className="space-y-6">
-              <h1 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-                About <span className="text-primary">GMATE</span>
-              </h1>
-              <p className="text-muted-foreground max-w-xl text-lg leading-relaxed">
-                GMATE is a modern task management platform designed for teams who
-                value clarity, efficiency, and collaboration. Built with
-                cutting-edge technology and a focus on user experience, we help
-                teams achieve their goals faster and smarter.
-              </p>
-              <Link
-                to="/contact"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
-              >
-                Get in touch
-              </Link>
-            </div>
-            <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
-              <img
-                src="/assets/about-hero.svg"
-                alt="Team collaboration and task boards"
-                className="h-auto w-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="bg-slate-950 text-slate-200 min-h-screen relative overflow-hidden selection:bg-indigo-500/30">
+      {/* --- Atmospheric Background --- */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[10%] left-[20%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[10%] right-[10%] w-[30%] h-[30%] bg-cyan-500/10 blur-[100px] rounded-full" />
+      </div>
 
-      <section className="border-border bg-background border-b py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div className="order-2 lg:order-1">
-              <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-md">
-                <img
-                  src="/assets/about-mission.svg"
-                  alt="Our mission – focus and execution"
-                  className="h-auto w-full object-cover"
-                />
+      <div className="relative z-10 pt-48 pb-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* --- Hero Section --- */}
+          <header className="max-w-4xl mb-32 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-4 py-1.5 text-[10px] font-black tracking-[0.2em] text-indigo-400 uppercase shadow-2xl mb-8">
+              <Target size={14} />
+              <span>Our Mission</span>
+            </div>
+            <h1 className="text-white text-5xl sm:text-7xl font-black tracking-tight leading-[1.1] mb-10">
+              Built by engineers, for{" "}
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-cyan-400">
+                high-performance
+              </span>{" "}
+              teams.
+            </h1>
+            <p className="text-slate-400 text-xl md:text-2xl font-medium leading-relaxed max-w-2xl">
+              We started Gmate with a simple goal: remove the friction from technical project management. No bloat, no lag, just focus.
+            </p>
+          </header>
+
+          {/* --- Bento Grid Values --- */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
+            {/* Speed Card */}
+            <div className="md:col-span-2 bg-slate-800/20 backdrop-blur-md border border-slate-700/50 rounded-3xl p-10 hover:-translate-y-1 transition-all duration-500 group overflow-hidden relative">
+              <div className="absolute -right-8 -top-8 bg-indigo-500/10 w-40 h-40 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-colors" />
+              <div className="bg-indigo-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-8 border border-indigo-500/20">
+                <Zap size={28} className="text-indigo-400" />
               </div>
-            </div>
-            <div className="order-1 space-y-4 lg:order-2">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                Our mission
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                We believe that great work happens when everyone knows what to
-                do, when it&apos;s due, and how it fits the bigger picture.
-                GMATE brings tasks, deadlines, and collaboration into one place
-                so your team can focus on execution—not hunting for updates.
-              </p>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                Whether you&apos;re a startup or an enterprise, we&apos;re here
-                to help you ship on time and keep everyone aligned.
+              <h3 className="text-white text-3xl font-black mb-4">Uncompromising Speed</h3>
+              <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-lg">
+                Performance is a feature. Every interaction in Gmate is optimized to be sub-100ms, ensuring your thoughts never outpace your tools.
               </p>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="border-border bg-muted/30 border-b py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                What we stand for
-              </h2>
-              <p className="text-muted-foreground max-w-lg text-lg leading-relaxed">
-                Our product and culture are built around three principles that
-                guide how we work and how we help you work.
-              </p>
-              <div className="space-y-4">
-                {values.map((item) => (
-                  <div
-                    key={item.title}
-                    className="border-border bg-background rounded-xl border p-4 shadow-sm"
-                  >
-                    <h3 className="font-semibold text-foreground">
-                      {item.title}
-                    </h3>
-                    <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
+            {/* Focus Card */}
+            <div className="bg-slate-800/20 backdrop-blur-md border border-slate-700/50 rounded-3xl p-10 hover:-translate-y-1 transition-all duration-500 group">
+              <div className="bg-cyan-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-8 border border-cyan-500/20">
+                <Cpu size={28} className="text-cyan-400" />
               </div>
+              <h3 className="text-white text-2xl font-black mb-4">Radical Clarity</h3>
+              <p className="text-slate-400 font-medium leading-relaxed">
+                We believe in surfacing only what matters. Our UI is a canvas for your work, not a distraction.
+              </p>
             </div>
-            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-md">
-              <img
-                src="/assets/about-values.svg"
-                alt="Our values – clarity, efficiency, collaboration"
-                className="h-auto w-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="border-border bg-background border-b py-16 sm:py-20">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Ready to try GMATE?
-          </h2>
-          <p className="text-muted-foreground mt-3 text-lg">
-            Join teams who ship faster with less friction.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/home"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
-            >
-              See features
-            </Link>
-            <Link
-              to="/contact"
-              className="border-border hover:bg-accent inline-flex rounded-lg border px-5 py-2.5 text-sm font-semibold transition-colors"
-            >
-              Contact us
-            </Link>
+            {/* Team Card */}
+            <div className="bg-slate-800/20 backdrop-blur-md border border-slate-700/50 rounded-3xl p-10 hover:-translate-y-1 transition-all duration-500 group">
+              <div className="bg-purple-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-8 border border-purple-500/20">
+                <Users size={28} className="text-purple-400" />
+              </div>
+              <h3 className="text-white text-2xl font-black mb-4">Human Sync</h3>
+              <p className="text-slate-400 font-medium leading-relaxed">
+                Software should serve the team. Gmate fosters natural collaboration without the endless notification noise.
+              </p>
+            </div>
+
+            {/* Security Card */}
+            <div className="md:col-span-2 bg-slate-800/20 backdrop-blur-md border border-slate-700/50 rounded-3xl p-10 hover:-translate-y-1 transition-all duration-500 group overflow-hidden relative">
+              <div className="absolute -left-8 -bottom-8 bg-emerald-500/10 w-40 h-40 rounded-full blur-3xl" />
+              <div className="bg-emerald-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-8 border border-emerald-500/20">
+                <ShieldCheck size={28} className="text-emerald-400" />
+              </div>
+              <h3 className="text-white text-3xl font-black mb-4">Dependable Privacy</h3>
+              <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-lg">
+                Your data is your most valuable asset. Gmate employs end-to-end encryption and enterprise-grade security protocols by default.
+              </p>
+            </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }

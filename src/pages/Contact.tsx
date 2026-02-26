@@ -1,259 +1,180 @@
-import {
-  Mail,
-  MapPin,
-  Phone,
-  Send,
-  CheckCircle2,
-  AlertCircle,
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+import { 
+  Mail, 
+  MapPin, 
+  Send, 
+  MessageSquare, 
+  Loader2, 
+  Globe,
+  Github,
+  Linkedin
 } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
-type FormState = {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-};
+const contactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
 
-const initialFormState: FormState = {
-  name: "",
-  email: "",
-  subject: "",
-  message: "",
-};
+type ContactFormValues = z.infer<typeof contactSchema>;
 
 export default function Contact() {
-  const [form, setForm] = useState<FormState>(initialFormState);
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof FormState, string>>
-  >({});
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "success" | "error"
-  >("idle");
+  const [isSubmitting, setIsGenerating] = useState(false);
 
-  const validate = (): boolean => {
-    const next: Partial<Record<keyof FormState, string>> = {};
-    if (!form.name.trim()) next.name = "Name is required";
-    if (!form.email.trim()) next.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      next.email = "Enter a valid email";
-    if (!form.subject.trim()) next.subject = "Subject is required";
-    if (!form.message.trim()) next.message = "Message is required";
-    setErrors(next);
-    return Object.keys(next).length === 0;
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+  });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FormState])
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-    setStatus("submitting");
-    try {
-      await new Promise((r) => setTimeout(r, 800));
-      setForm(initialFormState);
-      setErrors({});
-      setStatus("success");
-    } catch {
-      setStatus("error");
-    }
+  const onSubmit = async (data: ContactFormValues) => {
+    setIsGenerating(true);
+    // Simulate API call
+    await new Promise(r => setTimeout(r, 1500));
+    console.log("Contact form data:", data);
+    setIsGenerating(false);
+    toast.success("Message sent! We will be in touch.");
+    reset();
   };
 
   return (
-    <section
-      id="resources"
-      className="border-border bg-background relative min-h-screen overflow-hidden border-b"
-    >
-      <div className="grid min-h-screen lg:grid-cols-2">
-        <div className="bg-primary text-primary-foreground flex items-center justify-center px-6 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-          <div className="mx-auto max-w-xl">
-            <h2 className="mb-4 text-3xl leading-tight font-black tracking-tight sm:text-4xl lg:text-5xl">
-              Get in touch
-            </h2>
-            <p className="text-primary-foreground/90 mb-8 text-lg">
-              Have a question or feedback? Send us a message and we&apos;ll
-              respond as soon as we can.
-            </p>
-            <div className="text-primary-foreground/90 space-y-4 text-sm">
-              <div className="flex items-start gap-3">
-                <Mail className="mt-0.5 h-5 w-5 shrink-0" />
-                <div>
-                  <p className="text-primary-foreground font-medium">Email</p>
-                  <a
-                    href="mailto:support@gmate.com"
-                    className="underline underline-offset-2 hover:opacity-90"
-                  >
-                    support@gmate.com
-                  </a>
+    <div className="bg-slate-950 text-slate-200 min-h-screen relative overflow-hidden selection:bg-indigo-500/30">
+      {/* --- Atmospheric Background --- */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[20%] left-[5%] w-[35%] h-[35%] bg-purple-500/10 blur-[100px] rounded-full" />
+      </div>
+
+      <div className="relative z-10 pt-48 pb-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+            
+            {/* --- Left Side: Info --- */}
+            <div className="space-y-12 animate-in fade-in slide-in-from-left-8 duration-1000">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-4 py-1.5 text-[10px] font-black tracking-[0.2em] text-indigo-400 uppercase shadow-2xl">
+                  <Globe size={14} />
+                  <span>Available Worldwide</span>
+                </div>
+                <h1 className="text-white text-5xl sm:text-7xl font-black tracking-tight leading-[1.1]">
+                  Let's build something{" "}
+                  <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-cyan-400">
+                    great
+                  </span>{" "}
+                  together.
+                </h1>
+                <p className="text-slate-400 text-xl font-medium leading-relaxed max-w-lg">
+                  Have a question about enterprise plans, custom workflows, or just want to say hi? We're all ears.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-slate-800/20 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 flex items-center gap-6 group hover:border-indigo-500/30 transition-all">
+                  <div className="bg-indigo-500/10 w-12 h-12 rounded-xl flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform">
+                    <Mail className="text-indigo-400" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Email us at</p>
+                    <p className="text-white font-bold text-lg">hello@gmate.app</p>
+                  </div>
+                </div>
+
+                <div className="bg-slate-800/20 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 flex items-center gap-6 group hover:border-cyan-500/30 transition-all">
+                  <div className="bg-cyan-500/10 w-12 h-12 rounded-xl flex items-center justify-center border border-cyan-500/20 group-hover:scale-110 transition-transform">
+                    <MapPin className="text-cyan-400" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Our Studio</p>
+                    <p className="text-white font-bold text-lg">San Francisco, CA</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <Phone className="mt-0.5 h-5 w-5 shrink-0" />
-                <div>
-                  <p className="text-primary-foreground font-medium">Phone</p>
-                  <p>+20 (000) 123 4567</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <MapPin className="mt-0.5 h-5 w-5 shrink-0" />
-                <div>
-                  <p className="text-primary-foreground font-medium">
-                    Location
-                  </p>
-                  <p>NTI Hire-Ready · Cairo, Egypt</p>
-                </div>
+
+              <div className="flex gap-6 items-center pt-4">
+                <a href="#" className="text-slate-500 hover:text-white transition-colors">
+                  <Github size={24} />
+                </a>
+                <a href="#" className="text-slate-500 hover:text-white transition-colors">
+                  <Linkedin size={24} />
+                </a>
+                <div className="h-px w-12 bg-slate-800" />
+                <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Follow our journey</p>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div className="bg-muted/30 flex items-center justify-center px-6 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-          <div className="relative mx-auto w-full max-w-sm">
-            <div className="border-border bg-card rounded-[2rem] border-8 p-4 shadow-2xl">
-              <div className="bg-background rounded-xl">
-                <div className="border-border bg-muted/50 flex items-center justify-between border-b px-4 py-3">
-                  <h4 className="text-sm font-semibold">Send a message</h4>
-                  <div className="bg-muted-foreground/20 h-1.5 w-12 rounded-full" />
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-3 p-4">
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-1.5">
-                      <label
-                        htmlFor="contact-name"
-                        className="text-foreground text-xs leading-none font-medium"
-                      >
-                        Name
-                      </label>
-                      <input
-                        id="contact-name"
-                        name="name"
-                        type="text"
-                        value={form.name}
-                        onChange={handleChange}
-                        placeholder="Your name"
-                        className="inputBase"
-                        aria-invalid={!!errors.name}
-                      />
-                      {errors.name && (
-                        <p className="text-destructive text-[10px]">
-                          {errors.name}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-1.5">
-                      <label
-                        htmlFor="contact-email"
-                        className="text-foreground text-xs leading-none font-medium"
-                      >
-                        Email
-                      </label>
-                      <input
-                        id="contact-email"
-                        name="email"
-                        type="email"
-                        value={form.email}
-                        onChange={handleChange}
-                        placeholder="you@example.com"
-                        className="inputBase"
-                        aria-invalid={!!errors.email}
-                      />
-                      {errors.email && (
-                        <p className="text-destructive text-[10px]">
-                          {errors.email}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <label
-                      htmlFor="contact-subject"
-                      className="text-foreground text-xs leading-none font-medium"
-                    >
-                      Subject
-                    </label>
-                    <input
-                      id="contact-subject"
-                      name="subject"
-                      type="text"
-                      value={form.subject}
-                      onChange={handleChange}
-                      placeholder="How can we help?"
-                      className="inputBase"
-                      aria-invalid={!!errors.subject}
+            {/* --- Right Side: Form --- */}
+            <div className="animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
+              <div className="bg-slate-900/50 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+                {/* Decoration */}
+                <div className="absolute top-0 right-0 bg-indigo-500/5 w-32 h-32 blur-3xl rounded-full" />
+                
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 relative z-10">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Full Name</Label>
+                    <Input 
+                      id="name" 
+                      placeholder="John Wick" 
+                      {...register("name")}
+                      className={`h-14 rounded-2xl bg-slate-950/50 border-slate-800 focus:border-indigo-500/50 focus:ring-indigo-500/20 transition-all placeholder:text-slate-700 text-white font-medium ${errors.name ? 'border-rose-500/50' : ''}`}
                     />
-                    {errors.subject && (
-                      <p className="text-destructive text-[10px]">
-                        {errors.subject}
-                      </p>
-                    )}
+                    {errors.name && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest ml-1">{errors.name.message}</p>}
                   </div>
-                  <div className="space-y-1.5">
-                    <label
-                      htmlFor="contact-message"
-                      className="text-foreground text-xs leading-none font-medium"
-                    >
-                      Message
-                    </label>
-                    <textarea
-                      id="contact-message"
-                      name="message"
-                      value={form.message}
-                      onChange={handleChange}
-                      placeholder="Your message..."
-                      rows={3}
-                      className={`inputBase min-h-[80px] resize-y`}
-                      aria-invalid={!!errors.message}
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Email Address</Label>
+                    <Input 
+                      id="email" 
+                      type="email"
+                      placeholder="wick@high-table.com" 
+                      {...register("email")}
+                      className={`h-14 rounded-2xl bg-slate-950/50 border-slate-800 focus:border-indigo-500/50 focus:ring-indigo-500/20 transition-all placeholder:text-slate-700 text-white font-medium ${errors.email ? 'border-rose-500/50' : ''}`}
                     />
-                    {errors.message && (
-                      <p className="text-destructive text-[10px]">
-                        {errors.message}
-                      </p>
-                    )}
+                    {errors.email && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest ml-1">{errors.email.message}</p>}
                   </div>
 
-                  {status === "success" && (
-                    <div className="bg-primary/10 text-primary border-primary/20 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium">
-                      <CheckCircle2 className="h-4 w-4 shrink-0" />
-                      Message sent. We&apos;ll get back soon.
-                    </div>
-                  )}
-                  {status === "error" && (
-                    <div className="bg-destructive/10 text-destructive border-destructive/20 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
-                      <AlertCircle className="h-4 w-4 shrink-0" />
-                      Something went wrong. Try again or email us.
-                    </div>
-                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="message" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Message</Label>
+                    <Textarea 
+                      id="message" 
+                      placeholder="Tell us about your team's goals..." 
+                      {...register("message")}
+                      className={`min-h-[160px] rounded-2xl bg-slate-950/50 border-slate-800 focus:border-indigo-500/50 focus:ring-indigo-500/20 transition-all placeholder:text-slate-700 text-white font-medium resize-none ${errors.message ? 'border-rose-500/50' : ''}`}
+                    />
+                    {errors.message && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest ml-1">{errors.message.message}</p>}
+                  </div>
 
-                  <Button
-                    type="submit"
-                    disabled={status === "submitting"}
-                    size="sm"
-                    className="mt-1 w-full gap-2 rounded-lg"
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full h-16 bg-white text-slate-950 hover:bg-slate-200 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-white/5 transition-all active:scale-[0.98] group"
                   >
-                    {status === "submitting" ? (
-                      "Sending..."
+                    {isSubmitting ? (
+                      <Loader2 className="animate-spin" />
                     ) : (
                       <>
-                        <Send className="h-3.5 w-3.5" />
-                        Send message
+                        Send Message
+                        <Send size={18} className="ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                       </>
                     )}
                   </Button>
                 </form>
               </div>
             </div>
+
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
