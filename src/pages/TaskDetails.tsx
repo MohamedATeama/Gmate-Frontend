@@ -1,7 +1,6 @@
 import { useMemo, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-
   ArrowLeft,
   CheckCircle2,
   Circle,
@@ -10,7 +9,6 @@ import {
   UploadCloud,
   FileText,
   X,
-
 } from "lucide-react";
 import { useTaskStore } from "@/store/useTaskStore";
 import EditTaskDialog from "@/components/tasks/EditTaskDialog";

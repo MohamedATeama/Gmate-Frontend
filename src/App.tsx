@@ -40,33 +40,33 @@ export default function App() {
         <NotificationProvider>
           <BrowserRouter>
             <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forget-password" element={<ForgetPassword />} />
-                <Route element={<MainLayout />}>
-                  <Route index element={<Home />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                </Route>
-                <Route path="/dashboard" element={<DashboardLayout />}>
-                  <Route index element={<DashboardPage />} />
-                  <Route path="my-tasks" element={<MyTasksPage />} />
-                  <Route path="tasks/:id" element={<TaskDetails />} />
-                  <Route path="projects" element={<ProjectsDashboard />} />
-                  <Route path="projects/:projectId" element={<ProjectDetailsPage />} />
-                  <Route path="profile" element={<ProfilePage />} />
-                  <Route path="profile/edit" element={<EditProfilePage />} />
-                  <Route path="notifications" element={<NotificationsPage />} />
-                  <Route path="team" element={<TeamPage />} />
-                  <Route path="timeline" element={<TimelinePage />} />
-                  <Route path="settings" element={<SettingsPage />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-            <Toaster position="top-right" richColors />
-          </NotificationProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forget-password" element={<ForgetPassword />} />
+              <Route element={<MainLayout />}>
+                <Route index element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+              </Route>
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                <Route index element={<DashboardPage />} />
+                <Route path="my-tasks" element={<MyTasksPage />} />
+                <Route path="tasks/:id" element={<TaskDetails />} />
+                <Route path="projects" element={<ProjectsDashboard />} />
+                <Route path="projects/:projectId" element={<ProjectDetailsPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="profile/edit" element={<EditProfilePage />} />
+                <Route path="notifications" element={<NotificationsPage />} />
+                <Route path="team" element={<TeamPage />} />
+                <Route path="timeline" element={<TimelinePage />} />
+                <Route path="settings" element={<SettingsPage />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <Toaster position="top-right" richColors />
+        </NotificationProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
