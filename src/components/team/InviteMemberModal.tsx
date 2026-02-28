@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, Send, Copy, Check, MessageCircle, Mail, Globe } from "lucide-react";
+import { X, Send, Copy, Check, MessageCircle, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +30,7 @@ export default function InviteMemberModal({ open, onOpenChange }: { open: boolea
     defaultValues: { role: "member" },
   });
 
-  const generateInvite = async (data: InviteFormValues) => {
+  const generateInvite = async (_data: InviteFormValues) => {
     setIsGenerating(true);
     // Simulate API delay
     await new Promise(r => setTimeout(r, 1200));

@@ -29,7 +29,14 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 
   function toggleDarkMode() {
-    setIsDarkMode((isDark: boolean) => !isDark);
+    // Support for Chrome View Transitions API for "Rocket Fast" seamless cross-fade
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        setIsDarkMode((isDark: boolean) => !isDark);
+      });
+    } else {
+      setIsDarkMode((isDark: boolean) => !isDark);
+    }
   }
 
   return (

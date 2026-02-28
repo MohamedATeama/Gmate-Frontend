@@ -1,7 +1,7 @@
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  CalendarDays,
+
   ArrowLeft,
   CheckCircle2,
   Circle,
@@ -10,9 +10,9 @@ import {
   UploadCloud,
   FileText,
   X,
-  Tag as TagIcon
+
 } from "lucide-react";
-import { useTasks } from "@/context/TasksContext";
+import { useTaskStore } from "@/store/useTaskStore";
 import EditTaskDialog from "@/components/tasks/EditTaskDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ const getStatusStyles = (status: string) => {
 export default function TaskDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { tasks } = useTasks();
+  const tasks = useTaskStore((state) => state.tasks);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const task = useMemo(() => {

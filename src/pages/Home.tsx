@@ -5,13 +5,11 @@ import {
   LayoutDashboard, 
   Users, 
   Sparkles, 
-  ShieldCheck, 
-  MousePointer2,
-  CheckCircle2,
+ 
+
+
   ChevronRight
 } from "lucide-react";
-import FeaturesSection from "@/components/landing/FeaturesSection";
-import PricingSection from "@/components/landing/PricingSection";
 
 export default function Home() {
   return (
@@ -96,7 +94,7 @@ export default function Home() {
                         <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{col.title}</span>
                         <div className="w-4 h-4 rounded bg-muted flex items-center justify-center text-[8px] text-muted-foreground">+</div>
                       </div>
-                      {col.tasks.map((task, j) => (
+                      {col.tasks.map((_task, j) => (
                         <div key={j} className="bg-muted/40 border border-border p-4 rounded-xl space-y-3">
                           <div className="h-1.5 w-8 rounded-full bg-indigo-500/50" />
                           <div className="h-3 w-full bg-muted-foreground/20 rounded" />

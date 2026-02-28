@@ -50,7 +50,6 @@ export function useKanbanBoard(projectId: string) {
     if (!over) return;
 
     const activeTaskData = active.data.current?.task as Task;
-    const overId = over.id as string;
     const overData = over.data.current;
 
     let newStatus: TaskStatus | undefined;

@@ -6,7 +6,7 @@ import {
   Mail, 
   MapPin, 
   Send, 
-  MessageSquare, 
+ 
   Loader2, 
   Globe,
   Github,

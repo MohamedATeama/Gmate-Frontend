@@ -7,6 +7,7 @@ export type Task = {
   status: TaskStatus;
   tag: string;
   date: string;
+  projectId?: string; // Added to support project-specific tasks
 };
 
 export const tasks: Task[] = [
@@ -17,6 +18,7 @@ export const tasks: Task[] = [
     status: "important",
     tag: "URGENT",
     date: "Mon, Oct 11, 2025",
+    projectId: "1",
   },
   {
     id: 2,
@@ -25,6 +27,7 @@ export const tasks: Task[] = [
     status: "inProgress",
     tag: "IN PROGRESS",
     date: "Tue, Oct 12, 2025",
+    projectId: "1",
   },
   {
     id: 3,
@@ -33,6 +36,7 @@ export const tasks: Task[] = [
     status: "upcoming",
     tag: "MEETING",
     date: "Wed, Oct 13, 2025",
+    projectId: "2",
   },
   {
     id: 4,
@@ -41,6 +45,7 @@ export const tasks: Task[] = [
     status: "upcoming",
     tag: "TEAM",
     date: "Thu, Oct 14, 2025",
+    projectId: "2",
   },
   {
     id: 5,
@@ -49,6 +54,7 @@ export const tasks: Task[] = [
     status: "important",
     tag: "BUG",
     date: "Fri, Oct 15, 2025",
+    projectId: "1",
   },
   {
     id: 6,
@@ -57,6 +63,6 @@ export const tasks: Task[] = [
     status: "completed",
     tag: "BACKEND",
     date: "Sat, Oct 16, 2025",
+    projectId: "3",
   },
 ];
-

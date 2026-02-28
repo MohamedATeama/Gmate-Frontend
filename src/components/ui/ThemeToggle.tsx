@@ -7,14 +7,32 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleDarkMode}
-      className="inline-flex items-center justify-center rounded-md w-9 h-9 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-border"
+      className="relative inline-flex items-center justify-center rounded-2xl w-10 h-10 text-slate-500 dark:text-slate-400 transition-all duration-500 bg-white/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10 shadow-sm active:scale-95 group overflow-hidden"
       aria-label="Toggle Theme"
     >
-      {isDarkMode ? (
-        <Sun size={16} className="text-foreground transition-all" />
-      ) : (
-        <Moon size={16} className="text-foreground transition-all" />
-      )}
+      <div className="relative w-5 h-5 flex items-center justify-center">
+        <Sun 
+          size={20} 
+          className={`absolute transition-all duration-700 ease-out ${
+            !isDarkMode 
+              ? "rotate-0 scale-100 opacity-100 text-indigo-600 dark:text-indigo-400" 
+              : "-rotate-90 scale-0 opacity-0"
+          }`} 
+        />
+        <Moon 
+          size={20} 
+          className={`absolute transition-all duration-700 ease-out ${
+            isDarkMode 
+              ? "rotate-0 scale-100 opacity-100 text-indigo-400" 
+              : "rotate-90 scale-0 opacity-0"
+          }`} 
+        />
+      </div>
+      
+      {/* Background Glow Effect */}
+      <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 ${
+        !isDarkMode ? "bg-indigo-600" : "bg-indigo-500"
+      }`} />
     </button>
   );
 }

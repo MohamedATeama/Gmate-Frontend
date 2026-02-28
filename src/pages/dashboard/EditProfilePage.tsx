@@ -17,7 +17,7 @@ export default function EditProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [profile, setProfile] = useState(defaultProfile);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [_avatarFile, _setAvatarFile] = useState<File | null>(null);
   const [avatarFileName, setAvatarFileName] = useState<string | null>(null);
   const [password, setPassword] = useState({ new: "", confirm: "" });
   const [accountSaved, setAccountSaved] = useState(false);
@@ -32,7 +32,7 @@ export default function EditProfilePage() {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setAvatarFile(file);
+      _setAvatarFile(file);
       setAvatarFileName(file.name);
     }
     setAccountSaved(false);

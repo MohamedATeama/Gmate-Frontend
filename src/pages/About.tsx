@@ -2,7 +2,7 @@ import {
   Zap, 
   Target, 
   Users, 
-  Rocket, 
+ 
   ShieldCheck, 
   Cpu 
 } from "lucide-react";

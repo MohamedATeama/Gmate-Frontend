@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Sparkles, X, Lightbulb, Zap, Rocket, Stars, BrainCircuit, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const SUGGESTIONS = [
   {
@@ -30,7 +29,7 @@ export default function AIAssistant() {
       <Dialog.Trigger asChild>
         <button className="fixed bottom-8 right-8 z-[100] group">
           <div className="absolute -inset-1 bg-linear-to-r from-indigo-500 via-purple-500 to-cyan-500 rounded-full blur opacity-30 group-hover:opacity-100 transition duration-500 animate-pulse"></div>
-          <div className="relative bg-slate-900/80 backdrop-blur-2xl border border-white/20 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:scale-110 group-active:scale-95">
+          <div className="relative bg-slate-900/80 backdrop-blur-lg border border-white/20 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 group-hover:scale-110 group-active:scale-95">
             <Sparkles size={28} className="text-white fill-white/10 group-hover:rotate-12 transition-transform" />
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-500 rounded-full border-2 border-slate-950 animate-bounce" />
           </div>
@@ -38,8 +37,8 @@ export default function AIAssistant() {
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="bg-black/40 backdrop-blur-sm fixed inset-0 z-[110] animate-in fade-in duration-300" />
-        <Dialog.Content className="fixed bottom-28 right-8 z-[120] w-full max-w-[380px] bg-slate-950/80 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in slide-in-from-bottom-8 zoom-in-95 duration-500 text-slate-100 outline-none">
+        <Dialog.Overlay className="bg-black/20 backdrop-blur-sm fixed inset-0 z-[110] animate-in fade-in duration-200" />
+        <Dialog.Content className="fixed bottom-28 right-8 z-[120] w-full max-w-[380px] bg-slate-950/90 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in slide-in-from-bottom-8 zoom-in-95 duration-300 text-slate-100 outline-none">
           
           {/* Header */}
           <div className="flex items-center justify-between mb-8">

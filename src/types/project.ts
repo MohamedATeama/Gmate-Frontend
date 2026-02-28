@@ -5,6 +5,8 @@ export const TaskStatusSchema = z.enum([
   "inProgress",
   "review",
   "completed",
+  "important",
+  "upcoming"
 ]);
 
 export type TaskStatus = z.infer<typeof TaskStatusSchema>;
@@ -16,6 +18,7 @@ export const TaskSchema = z.object({
   description: z.string().optional(),
   status: TaskStatusSchema,
   priority: z.enum(["low", "medium", "high", "urgent"]),
+  tag: z.string().optional(),
   assignee: z.object({
     name: z.string(),
     avatar: z.string().optional(),
@@ -27,14 +30,23 @@ export type Task = z.infer<typeof TaskSchema>;
 
 export const ProjectSchema = z.object({
   id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  status: z.enum(["active", "on-hold", "completed"]),
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  description: z.string().min(5, "Description must be at least 5 characters"),
+  status: z.enum(["active", "on-hold", "completed", "planning"]),
   progress: z.number().min(0).max(100),
-  members: z.number(),
+  members: z.number().min(0),
+  createdAt: z.string().optional(),
 });
 
 export type Project = z.infer<typeof ProjectSchema>;
+
+export const ProjectFormSchema = ProjectSchema.omit({
+  id: true,
+  progress: true,
+  createdAt: true,
+});
+
+export type ProjectFormData = z.infer<typeof ProjectFormSchema>;
 
 export const TeamMemberSchema = z.object({
   id: z.string(),

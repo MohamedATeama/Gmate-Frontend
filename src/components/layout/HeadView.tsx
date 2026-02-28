@@ -1,55 +1,80 @@
 import { useLocation, Link } from "react-router-dom";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import { Bell } from "lucide-react";
+import { Bell, ChevronRight, Zap } from "lucide-react";
 import { useNotifications } from "@/context/NotificationContext";
 
 export default function HeadView() {
   const { pathname } = useLocation();
   const { unreadCount } = useNotifications();
   
-  // Basic breadcrumb logic
   const pathSegments = pathname.split("/").filter(Boolean);
   const currentPage = pathSegments[pathSegments.length - 1] || "Dashboard";
   const formattedPageName = currentPage.charAt(0).toUpperCase() + currentPage.slice(1).replace(/-/g, " ");
 
   return (
-    <header className="bg-background/80 border-border sticky top-0 z-30 w-full border-b backdrop-blur-md h-16">
-      <div className="h-full flex items-center px-6">
+    <header className="sticky top-0 z-50 w-full h-20 bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg border-b border-slate-200 dark:border-white/5 px-6 md:px-10">
+      <div className="h-full max-w-7xl mx-auto flex items-center justify-between">
         
-        {/* Left Spacer for Mobile Toggle Placeholder */}
-        <div className="w-12 lg:hidden shrink-0" />
+        {/* --- Clickable Gmate Logo --- */}
+        <Link to="/" className="flex items-center gap-3 group transition-all active:scale-95">
+          <div className="relative">
+            <div className="absolute -inset-1 bg-indigo-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="h-10 w-10 shrink-0 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-lg transition-transform group-hover:scale-105 duration-500">
+              <img 
+                src="/assets/logo-light.png" 
+                alt="Gmate" 
+                className="h-full w-full object-cover dark:hidden"
+              />
+              <img 
+                src="/assets/logo-dark.png" 
+                alt="Gmate" 
+                className="h-full w-full object-cover hidden dark:block"
+              />
+            </div>
+          </div>
+          <div className="hidden sm:flex flex-col">
+            <span className="text-foreground text-sm font-black tracking-tighter uppercase leading-none">GMATE</span>
+            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-indigo-500">Workspace</span>
+          </div>
+        </Link>
 
-        {/* --- Surprising Centered Breadcrumb --- */}
-        <div className="flex-1 flex justify-center items-center">
-          <div className="inline-flex items-center gap-2 bg-muted/30 dark:bg-white/5 border border-border/50 px-4 py-1.5 rounded-full shadow-inner animate-in fade-in zoom-in duration-500">
-            <span className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em] opacity-50">
-              Workspace
+        {/* --- Premium Breadcrumb --- */}
+        <div className="hidden lg:flex items-center gap-3">
+          <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 group hover:border-primary/30 transition-all duration-500 cursor-default shadow-inner">
+            <Zap size={14} className="text-primary animate-pulse" />
+            <span className="text-slate-400 dark:text-slate-500 nav-font opacity-70">
+              Navigation
             </span>
-            <div className="w-1 h-1 bg-primary rounded-full" />
-            <h2 className="text-foreground text-[11px] font-black uppercase tracking-widest leading-none">
+            <ChevronRight size={12} className="text-slate-300 dark:text-slate-700" />
+            <h2 className="text-slate-900 dark:text-white nav-font leading-none">
               {formattedPageName}
             </h2>
           </div>
         </div>
         
         {/* Right Actions */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-4">
           <Link 
             to="/dashboard/notifications" 
-            className="p-2 rounded-md hover:bg-muted transition-all relative group"
+            className="relative h-11 w-11 flex items-center justify-center rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 hover:text-primary dark:hover:text-white transition-all shadow-sm hover:shadow-xl group"
             aria-label="Notifications"
           >
-            <Bell size={18} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+            <Bell size={20} className="group-hover:rotate-12 transition-transform duration-500" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-600 rounded-full border-2 border-background animate-pulse" />
+              <span className="absolute top-2.5 right-2.5 w-3 h-3 bg-indigo-600 rounded-full border-[3px] border-white dark:border-slate-950 animate-pulse" />
             )}
           </Link>
           
           <ThemeToggle />
           
-          <div className="bg-border h-4 w-px hidden sm:block mx-1" />
-          <div className="text-muted-foreground hidden text-[10px] font-black uppercase tracking-widest sm:block opacity-50">
-            Premium
+          <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-white/10 ml-2">
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white">Pro Status</span>
+              <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-tighter">Verified</span>
+            </div>
+            <div className="h-9 w-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+              <Zap size={16} className="text-emerald-500 fill-emerald-500/20" />
+            </div>
           </div>
         </div>
       </div>

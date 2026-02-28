@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Calendar, LayoutDashboard, User } from "lucide-react";
+import { Calendar, LayoutDashboard } from "lucide-react";
 import type { Task } from "@/types/project";
 import { Badge } from "@/components/ui/badge";
 
@@ -24,7 +25,7 @@ const getStatusStyles = (status: string) => {
   }
 };
 
-export function KanbanTaskCard({ task, onClick }: Props) {
+function KanbanTaskCardComponent({ task, onClick }: Props) {
   const {
     attributes,
     listeners,
@@ -105,3 +106,5 @@ export function KanbanTaskCard({ task, onClick }: Props) {
     </div>
   );
 }
+
+export const KanbanTaskCard = memo(KanbanTaskCardComponent);

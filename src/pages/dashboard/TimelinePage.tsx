@@ -1,12 +1,12 @@
-import { useTasks } from "@/context/TasksContext";
+import { useTaskStore } from "@/store/useTaskStore";
 import { 
   Calendar as CalendarIcon, 
-  Clock, 
-  ChevronRight, 
+ 
+ 
   Search, 
-  Filter,
+
   ArrowRight,
-  LayoutDashboard
+
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +28,7 @@ const getStatusStyles = (status: string) => {
 };
 
 export default function TimelinePage() {
-  const { tasks } = useTasks();
+  const tasks = useTaskStore((state) => state.tasks);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sort tasks by date (mock sorting since dates are strings)

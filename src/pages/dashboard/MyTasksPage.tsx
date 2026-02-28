@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, LayoutDashboard, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TaskCard from "@/components/shared/TaskCard";
 import Empty from "@/components/shared/Empty";
-import { useTasks } from "@/context/TasksContext";
+import { useTaskStore } from "@/store/useTaskStore";
 import type { TaskStatus } from "@/data/tasks";
 import AddTaskDialog from "@/components/tasks/AddTaskDialog";
+import KanbanBoard from "@/components/KanbanBoard";
 
 const statusFilterOptions: { value: TaskStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -24,10 +25,11 @@ const neonStyles: Record<string, string> = {
 };
 
 export default function MyTasksPage() {
-  const { tasks: taskList } = useTasks();
+  const taskList = useTaskStore((state) => state.tasks);
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [viewMode, setViewMode] = useState<"list" | "board">("list");
 
   const filtered = taskList.filter((task) => {
     const matchStatus =
@@ -52,15 +54,32 @@ export default function MyTasksPage() {
           </p>
         </div>
 
-        <div className="relative w-full sm:max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
-            type="search"
-            placeholder="Search tasks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full pl-11 pr-4 text-sm font-medium outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400"
-          />
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          <div className="relative w-full sm:max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              type="search"
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-11 bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full pl-11 pr-4 text-sm font-medium outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400"
+            />
+          </div>
+          
+          <div className="bg-slate-100 dark:bg-white/5 rounded-full p-1 flex items-center">
+            <button 
+              onClick={() => setViewMode("list")}
+              className={`p-2 rounded-full transition-all ${viewMode === "list" ? "bg-white dark:bg-white/10 shadow-sm text-primary" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"}`}
+            >
+              <List size={18} />
+            </button>
+            <button 
+              onClick={() => setViewMode("board")}
+              className={`p-2 rounded-full transition-all ${viewMode === "board" ? "bg-white dark:bg-white/10 shadow-sm text-primary" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"}`}
+            >
+              <LayoutDashboard size={18} />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -101,7 +120,7 @@ export default function MyTasksPage() {
               Clear filters
             </Button>
           </div>
-        ) : (
+        ) : viewMode === "list" ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((task) => (
               <TaskCard key={task.id} task={task} />
@@ -118,6 +137,10 @@ export default function MyTasksPage() {
               <h2 className="text-foreground text-sm font-bold">New Task</h2>
               <p className="text-slate-500 text-[11px] font-medium text-center mt-1">Add something to your list</p>
             </button>
+          </div>
+        ) : (
+          <div className="pt-2">
+            <KanbanBoard initialTasks={filtered} />
           </div>
         )}
 

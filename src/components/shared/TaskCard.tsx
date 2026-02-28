@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { CalendarDays, MoreHorizontal } from "lucide-react";
-import type { Task } from "@/types/project";
 import EditTaskDialog from "@/components/tasks/EditTaskDialog";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -22,14 +23,39 @@ type TaskCardProps = {
   task: any; 
 };
 
-export default function TaskCard({ task }: TaskCardProps) {
+function TaskCardComponent({ task }: TaskCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task.id,
+    data: {
+      type: "Task",
+      task,
+    },
+  });
+
+  const style = {
+    transition,
+    transform: CSS.Translate.toString(transform),
+    opacity: isDragging ? 0.5 : 1,
+  };
 
   return (
     <>
       <article
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
         onClick={() => setIsEditOpen(true)}
-        className="universal-card group flex flex-col gap-4 hover:shadow-xl"
+        className="universal-card group flex flex-col gap-4 hover:shadow-xl cursor-grab active:cursor-grabbing"
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 space-y-2 flex-1">
@@ -73,3 +99,5 @@ export default function TaskCard({ task }: TaskCardProps) {
     </>
   );
 }
+
+export default memo(TaskCardComponent);

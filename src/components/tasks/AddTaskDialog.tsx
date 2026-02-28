@@ -3,7 +3,7 @@ import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useTasks } from "@/context/TasksContext";
+import { useTaskStore } from "@/store/useTaskStore";
 import type { TaskStatus } from "@/data/tasks";
 import { Label } from "@/components/ui/label";
 
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function AddTaskDialog({ onClose }: Props) {
-  const { addTask } = useTasks();
+  const addTask = useTaskStore((state) => state.addTask);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     title: "",
