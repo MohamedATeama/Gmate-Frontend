@@ -78,7 +78,6 @@
   
   body {
     @apply bg-background text-foreground font-sans antialiased selection:bg-primary/20 tracking-tight;
-    /* targeted, high-performance transition for theme switching */
     transition: background-color 0.2s ease, color 0.2s ease;
   }
   
@@ -89,12 +88,10 @@
 
 @layer utilities {
   .universal-card {
-    /* Senior optimization: Remove backdrop-blur from repetitive elements to save GPU */
     @apply bg-card text-foreground border border-border rounded-[2rem] p-6 md:p-10 shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer;
   }
   
   .glass-header {
-    /* Reserve backdrop-blur only for high-impact surfaces */
     @apply bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-border z-50;
   }
 
@@ -124,13 +121,6 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-/* Optimization for View Transitions API */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.2s;
-  animation-timing-function: ease-in-out;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
