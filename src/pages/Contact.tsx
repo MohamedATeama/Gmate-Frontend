@@ -1,22 +1,20 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
-import { 
-  Mail, 
-  MapPin, 
-  Send, 
- 
-  Loader2, 
+import {
+  Mail,
+  MapPin,
+  Send,
+  Loader2,
   Globe,
   Github,
-  Linkedin
+  Linkedin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useContact } from "@/hooks/useContact";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -27,8 +25,7 @@ const contactSchema = z.object({
 type ContactFormValues = z.infer<typeof contactSchema>;
 
 export default function Contact() {
-  const [isSubmitting, setIsGenerating] = useState(false);
-
+  const { contact, isPending } = useContact();
   const {
     register,
     handleSubmit,
@@ -39,139 +36,190 @@ export default function Contact() {
   });
 
   const onSubmit = async (data: ContactFormValues) => {
-    setIsGenerating(true);
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 1500));
-    console.log("Contact form data:", data);
-    setIsGenerating(false);
-    toast.success("Message sent! We will be in touch.");
-    reset();
+    contact(data, { onSettled: () => reset() });
   };
 
   return (
-    <div className="bg-background text-foreground min-h-screen relative overflow-hidden selection:bg-indigo-500/30">
+    <div className="bg-background text-foreground relative min-h-screen overflow-hidden selection:bg-indigo-500/30">
       {/* --- Atmospheric Background --- */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-indigo-600/5 dark:bg-indigo-600/10 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[20%] left-[5%] w-[35%] h-[35%] bg-purple-500/5 dark:bg-purple-500/10 blur-[100px] rounded-full" />
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute top-[20%] right-[10%] h-[40%] w-[40%] animate-pulse rounded-full bg-indigo-600/5 blur-[120px] dark:bg-indigo-600/10" />
+        <div className="absolute bottom-[20%] left-[5%] h-[35%] w-[35%] rounded-full bg-purple-500/5 blur-[100px] dark:bg-purple-500/10" />
       </div>
 
-      <div className="relative z-10 pt-48 pb-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-            
+      <div className="relative z-10 px-6 pt-48 pb-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 items-start gap-20 lg:grid-cols-2">
             {/* --- Left Side: Info --- */}
-            <div className="space-y-12 animate-in fade-in slide-in-from-left-8 duration-1000">
+            <div className="animate-in fade-in slide-in-from-left-8 space-y-12 duration-1000">
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-4 py-1.5 text-[10px] font-black tracking-[0.2em] text-indigo-500 dark:text-indigo-400 uppercase shadow-sm">
+                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-4 py-1.5 text-[10px] font-black tracking-[0.2em] text-indigo-500 uppercase shadow-sm dark:text-indigo-400">
                   <Globe size={14} />
                   <span>Available Worldwide</span>
                 </div>
-                <h1 className="text-foreground text-5xl sm:text-7xl font-black tracking-tight leading-[1.1]">
+                <h1 className="text-foreground text-5xl leading-[1.1] font-black tracking-tight sm:text-7xl">
                   Let's build something{" "}
-                  <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-cyan-400 dark:from-indigo-400 dark:to-cyan-400">
+                  <span className="bg-linear-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent dark:from-indigo-400 dark:to-cyan-400">
                     great
                   </span>{" "}
                   together.
                 </h1>
-                <p className="text-muted-foreground text-xl font-medium leading-relaxed max-w-lg">
-                  Have a question about enterprise plans, custom workflows, or just want to say hi? We're all ears.
+                <p className="text-muted-foreground max-w-lg text-xl leading-relaxed font-medium">
+                  Have a question about enterprise plans, custom workflows, or
+                  just want to say hi? We're all ears.
                 </p>
               </div>
 
               <div className="space-y-4">
-                <div className="bg-card/50 backdrop-blur-md border border-border rounded-2xl p-6 flex items-center gap-6 group hover:border-indigo-500/30 transition-all">
-                  <div className="bg-indigo-500/10 w-12 h-12 rounded-xl flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform">
-                    <Mail className="text-indigo-500 dark:text-indigo-400" size={24} />
+                <div className="bg-card/50 border-border group flex items-center gap-6 rounded-2xl border p-6 backdrop-blur-md transition-all hover:border-indigo-500/30">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 transition-transform group-hover:scale-110">
+                    <Mail
+                      className="text-indigo-500 dark:text-indigo-400"
+                      size={24}
+                    />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Email us at</p>
-                    <p className="text-foreground font-bold text-lg">hello@gmate.app</p>
+                    <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                      Email us at
+                    </p>
+                    <p className="text-foreground text-lg font-bold">
+                      hello@gmate.app
+                    </p>
                   </div>
                 </div>
 
-                <div className="bg-card/50 backdrop-blur-md border border-border rounded-2xl p-6 flex items-center gap-6 group hover:border-cyan-500/30 transition-all">
-                  <div className="bg-cyan-500/10 w-12 h-12 rounded-xl flex items-center justify-center border border-cyan-500/20 group-hover:scale-110 transition-transform">
-                    <MapPin className="text-cyan-500 dark:text-cyan-400" size={24} />
+                <div className="bg-card/50 border-border group flex items-center gap-6 rounded-2xl border p-6 backdrop-blur-md transition-all hover:border-cyan-500/30">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-cyan-500/20 bg-cyan-500/10 transition-transform group-hover:scale-110">
+                    <MapPin
+                      className="text-cyan-500 dark:text-cyan-400"
+                      size={24}
+                    />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Our Studio</p>
-                    <p className="text-foreground font-bold text-lg">San Francisco, CA</p>
+                    <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                      Our Studio
+                    </p>
+                    <p className="text-foreground text-lg font-bold">
+                      San Francisco, CA
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex gap-6 items-center pt-4">
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <div className="flex items-center gap-6 pt-4">
+                <a
+                  href="#"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   <Github size={24} />
                 </a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a
+                  href="#"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
                   <Linkedin size={24} />
                 </a>
-                <div className="h-px w-12 bg-border" />
-                <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest">Follow our journey</p>
+                <div className="bg-border h-px w-12" />
+                <p className="text-muted-foreground text-xs font-bold tracking-widest uppercase">
+                  Follow our journey
+                </p>
               </div>
             </div>
 
             {/* --- Right Side: Form --- */}
-            <div className="animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
-              <div className="bg-card/50 backdrop-blur-2xl border border-border rounded-[2.5rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+            <div className="animate-in fade-in slide-in-from-right-8 delay-200 duration-1000">
+              <div className="bg-card/50 border-border relative overflow-hidden rounded-[2.5rem] border p-8 shadow-2xl backdrop-blur-2xl sm:p-12">
                 {/* Decoration */}
-                <div className="absolute top-0 right-0 bg-indigo-500/5 w-32 h-32 blur-3xl rounded-full" />
-                
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 relative z-10">
+                <div className="absolute top-0 right-0 h-32 w-32 rounded-full bg-indigo-500/5 blur-3xl" />
+
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="relative z-10 space-y-8"
+                >
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Full Name</Label>
-                    <Input 
-                      id="name" 
-                      placeholder="John Wick" 
+                    <Label
+                      htmlFor="name"
+                      className="text-muted-foreground ml-1 text-[10px] font-black tracking-[0.2em] uppercase"
+                    >
+                      Full Name
+                    </Label>
+                    <Input
+                      id="name"
+                      placeholder="Enter your name"
+                      disabled={isPending}
                       {...register("name")}
-                      className={`h-14 rounded-2xl bg-background/50 border-border focus:border-indigo-500/50 focus:ring-indigo-500/20 transition-all placeholder:text-muted-foreground/50 text-foreground font-medium ${errors.name ? 'border-rose-500/50' : ''}`}
+                      className={`bg-background/50 border-border placeholder:text-muted-foreground/50 text-foreground h-14 rounded-2xl font-medium transition-all focus:border-indigo-500/50 focus:ring-indigo-500/20 ${errors.name ? "border-rose-500/50" : ""}`}
                     />
-                    {errors.name && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest ml-1">{errors.name.message}</p>}
+                    {errors.name && (
+                      <p className="ml-1 text-[10px] font-bold tracking-widest text-rose-500 uppercase">
+                        {errors.name.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Email Address</Label>
-                    <Input 
-                      id="email" 
+                    <Label
+                      htmlFor="email"
+                      className="text-muted-foreground ml-1 text-[10px] font-black tracking-[0.2em] uppercase"
+                    >
+                      Email Address
+                    </Label>
+                    <Input
+                      id="email"
                       type="email"
-                      placeholder="wick@high-table.com" 
+                      placeholder="Enter your email"
+                      disabled={isPending}
                       {...register("email")}
-                      className={`h-14 rounded-2xl bg-background/50 border-border focus:border-indigo-500/50 focus:ring-indigo-500/20 transition-all placeholder:text-muted-foreground/50 text-foreground font-medium ${errors.email ? 'border-rose-500/50' : ''}`}
+                      className={`bg-background/50 border-border placeholder:text-muted-foreground/50 text-foreground h-14 rounded-2xl font-medium transition-all focus:border-indigo-500/50 focus:ring-indigo-500/20 ${errors.email ? "border-rose-500/50" : ""}`}
                     />
-                    {errors.email && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest ml-1">{errors.email.message}</p>}
+                    {errors.email && (
+                      <p className="ml-1 text-[10px] font-bold tracking-widest text-rose-500 uppercase">
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Message</Label>
-                    <Textarea 
-                      id="message" 
-                      placeholder="Tell us about your team's goals..." 
+                    <Label
+                      htmlFor="message"
+                      className="text-muted-foreground ml-1 text-[10px] font-black tracking-[0.2em] uppercase"
+                    >
+                      Message
+                    </Label>
+                    <Textarea
+                      id="message"
+                      placeholder="Tell us about your team's goals..."
+                      disabled={isPending}
                       {...register("message")}
-                      className={`min-h-[160px] rounded-2xl bg-background/50 border-border focus:border-indigo-500/50 focus:ring-indigo-500/20 transition-all placeholder:text-muted-foreground/50 text-foreground font-medium resize-none ${errors.message ? 'border-rose-500/50' : ''}`}
+                      className={`bg-background/50 border-border placeholder:text-muted-foreground/50 text-foreground min-h-40 resize-none rounded-2xl font-medium transition-all focus:border-indigo-500/50 focus:ring-indigo-500/20 ${errors.message ? "border-rose-500/50" : ""}`}
                     />
-                    {errors.message && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest ml-1">{errors.message.message}</p>}
+                    {errors.message && (
+                      <p className="ml-1 text-[10px] font-bold tracking-widest text-rose-500 uppercase">
+                        {errors.message.message}
+                      </p>
+                    )}
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="w-full h-16 bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl font-black uppercase tracking-widest shadow-xl transition-all active:scale-[0.98] group"
+                  <Button
+                    type="submit"
+                    disabled={isPending}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 group h-16 w-full rounded-2xl font-black tracking-widest uppercase shadow-xl transition-all active:scale-[0.98]"
                   >
-                    {isSubmitting ? (
+                    {isPending ? (
                       <Loader2 className="animate-spin" />
                     ) : (
                       <>
                         Send Message
-                        <Send size={18} className="ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        <Send
+                          size={18}
+                          className="ml-2 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+                        />
                       </>
                     )}
                   </Button>
                 </form>
               </div>
             </div>
-
           </div>
         </div>
       </div>

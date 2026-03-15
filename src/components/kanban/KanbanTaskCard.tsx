@@ -92,7 +92,7 @@ function KanbanTaskCardComponent({ task, onClick }: Props) {
             <img src="/assets/avatar.jpg" alt="avatar" className="w-full h-full object-cover" />
           </div>
           <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-            {task.assignee.name.split(' ')[0]}
+            {task.assignee?.name.split(' ')[0]}
           </span>
         </div>
         
