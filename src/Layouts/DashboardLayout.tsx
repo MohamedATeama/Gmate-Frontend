@@ -1,13 +1,24 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/layout/Sidebar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import HeadView from "@/components/layout/HeadView";
 import AIAssistant from "@/components/ui/AIAssistant";
 import { Menu, X } from "lucide-react";
+import cookie from "react-cookies";
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const refreshToken = cookie.load("refreshToken");
+
+    if (!refreshToken) {
+      navigate("/login");
+    }
+  })
+  
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && sidebarOpen) {
@@ -33,7 +44,6 @@ export default function DashboardLayout() {
 
       <main className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-mesh">
         
-        {/* --- Premium Glassmorphism Toggle (Global) --- */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className={`fixed bottom-8 left-8 z-[100] group transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1) will-change-transform ${sidebarOpen ? "translate-x-72" : "translate-x-0"}`}

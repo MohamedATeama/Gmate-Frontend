@@ -235,7 +235,7 @@ export default function EditProfilePage() {
         </h2>
         <form onSubmit={handleSubmit(onSubmitChangePassword)} className="border-border bg-card shadow-card space-y-5 rounded-xl border px-10 py-6">
           <div className="border-border space-y-2 border-b py-4 md:grid md:grid-cols-[24rem_1fr_1.2fr] md:gap-4 md:space-y-0">
-            <Label htmlFor="oldPassword">New password</Label>
+            <Label htmlFor="oldPassword">Old password</Label>
             <Input
               id="oldPassword"
               type="password"

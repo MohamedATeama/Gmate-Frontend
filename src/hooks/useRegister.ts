@@ -22,8 +22,8 @@ export function useRegister() {
       queryClient.setQueryData(["user"], data.data.user);
       navigate("/dashboard", { replace: true });
     },
-    onError: (err) => {
-      toast.error(err.message);
+    onError: () => {
+      toast.error("Register failed");
     },
   });
 
