@@ -17,6 +17,7 @@ import { useDeleteAttachment } from "@/hooks/useDeleteAttachment";
 import { useAddComment } from "@/hooks/useAddComment";
 import { useUpdateComment } from "@/hooks/useUpdateComment";
 import { useDeleteComment } from "@/hooks/useDeleteComment";
+import { useUser } from "@/hooks/useUser";
 import EditTaskDialog from "@/components/tasks/EditTaskDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ export default function TaskDetails() {
   const { addComment, isPending: isAddingComment } = useAddComment();
   const { updateComment, isPending: isUpdatingComment } = useUpdateComment();
   const { deleteComment, isPending: isDeletingComment } = useDeleteComment();
+  const { user } = useUser();
 
   const handleUploadFiles = () => {
     if (!files.length) return;
@@ -124,14 +126,16 @@ export default function TaskDetails() {
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <Button variant="outline" onClick={() => setEditingTask(task)} className="rounded-xl flex-1 sm:flex-none font-bold">Edit Task</Button>
-          <Button 
-            onClick={handleToggleComplete}
-            disabled={isUpdating}
-            className={`rounded-xl flex-1 sm:flex-none font-bold shadow-lg transition-all ${isCompleted ? "bg-emerald-600 hover:bg-emerald-500" : "bg-primary hover:bg-indigo-500"}`}
-          >
-            {isCompleted ? <CheckCircle2 className="mr-2" size={18} /> : <Circle className="mr-2" size={18} />}
-            {isCompleted ? "Completed" : "Complete"}
-          </Button>
+          {(user?.email === task?.createdBy?.email) && (
+            <Button 
+              onClick={handleToggleComplete}
+              disabled={isUpdating}
+              className={`rounded-xl flex-1 sm:flex-none font-bold shadow-lg transition-all ${isCompleted ? "bg-emerald-600 hover:bg-emerald-500" : "bg-primary hover:bg-indigo-500"}`}
+            >
+              {isCompleted ? <CheckCircle2 className="mr-2" size={18} /> : <Circle className="mr-2" size={18} />}
+              {isCompleted ? "Completed" : "Complete"}
+            </Button>
+          )}
         </div>
       </header>
 
@@ -227,61 +231,113 @@ export default function TaskDetails() {
               <MessageSquare size={14} /> Discussion ({task.comments?.length || 0})
             </h3>
             
-            <div className="space-y-6">
+            <div className="space-y-6 max-h-60 overflow-y-auto">
               {task.comments?.map((c: any) => {
-                const authorName = c.user?.name || c.author?.name || c.sender?.name || "User";
-                const authorInitial = authorName[0]?.toUpperCase() || "U";
+                const authorName = c.createdBy.name;
+                const authorInitial = authorName.split(" ")[0][0]?.toUpperCase() || "U";
                 const text = c.text || c.content || "";
+                const authorEmail = c.createdBy.email;
                 const time = c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "Just now";
 
                 return (
-                 <div key={c._id || c.id} className="flex gap-4 group">
-                  <div className="h-9 w-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-[10px] font-black text-primary shrink-0">
-                    {authorInitial}
-                  </div>
-                  <div className="space-y-1 flex-1">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-black uppercase tracking-widest">{authorName}</span>
-                        <span className="text-[10px] font-bold text-muted-foreground">{time}</span>
-                      </div>
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => { setEditingCommentId(c._id); setEditingCommentText(text); }} className="text-[10px] font-bold text-indigo-500 hover:text-indigo-400 uppercase tracking-widest">Edit</button>
-                        <button onClick={() => deleteComment({ taskId: task._id!, commentId: c._id })} disabled={isDeletingComment} className="text-[10px] font-bold text-rose-500 hover:text-rose-400 uppercase tracking-widest">Delete</button>
-                      </div>
+                  <div key={c._id || c.id} className="group flex gap-4">
+                    <div className="bg-primary/10 border-primary/20 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[10px] font-black">
+                      {authorInitial}
                     </div>
-                    {editingCommentId === c._id ? (
-                      <div className="mt-2 flex gap-2">
-                        <input value={editingCommentText} onChange={e => setEditingCommentText(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUpdateComment(c._id)} className="flex-1 bg-muted/30 border border-border rounded-lg px-3 py-1.5 text-sm outline-none" autoFocus />
-                        <Button size="sm" onClick={() => handleUpdateComment(c._id)} disabled={isUpdatingComment} className="h-8">Save</Button>
-                        <Button size="sm" variant="ghost" onClick={() => setEditingCommentId(null)} className="h-8">Cancel</Button>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-black tracking-widest uppercase">
+                            {authorName}
+                          </span>
+                          <span className="text-muted-foreground text-[10px] font-bold">
+                            {time}
+                          </span>
+                        </div>
+                        {user?.email === authorEmail && (
+                          <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+                            <button
+                              onClick={() => {
+                                setEditingCommentId(c._id);
+                                setEditingCommentText(text);
+                              }}
+                              className="text-[10px] font-bold tracking-widest text-indigo-500 uppercase hover:text-indigo-400"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() =>
+                                deleteComment({
+                                  taskId: task._id!,
+                                  commentId: c._id,
+                                })
+                              }
+                              disabled={isDeletingComment}
+                              className="text-[10px] font-bold tracking-widest text-rose-500 uppercase hover:text-rose-400"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    ) : (
-                      <div className="bg-muted/50 p-4 rounded-2xl rounded-tl-sm text-sm font-medium leading-relaxed">
-                        {text}
-                      </div>
-                    )}
+                      {editingCommentId === c._id ? (
+                        <div className="mt-2 flex gap-2">
+                          <input
+                            value={editingCommentText}
+                            onChange={(e) =>
+                              setEditingCommentText(e.target.value)
+                            }
+                            onKeyDown={(e) =>
+                              e.key === "Enter" && handleUpdateComment(c._id)
+                            }
+                            className="bg-muted/30 border-border flex-1 rounded-lg border px-3 py-1.5 text-sm outline-none"
+                            autoFocus
+                          />
+                          <Button
+                            size="sm"
+                            onClick={() => handleUpdateComment(c._id)}
+                            disabled={isUpdatingComment}
+                            className="h-8"
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setEditingCommentId(null)}
+                            className="h-8"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="bg-muted/50 rounded-2xl rounded-tl-sm p-4 text-sm leading-relaxed font-medium">
+                          {text}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )})}
+                );})}
             </div>
 
-            <div className="flex gap-3 pt-4 border-t border-border/50">
-              <input 
-                value={newComment}
-                onChange={e => setNewComment(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleAddComment()}
-                placeholder="Write a message..."
-                className="flex-1 bg-muted/30 border border-border rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-              />
-              <Button 
-                onClick={handleAddComment}
-                disabled={isAddingComment || !newComment.trim()}
-                className="rounded-xl h-11 px-6 font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20"
-              >
-                <Send size={16} />
-              </Button>
-            </div>
+            {(user?.email === task?.createdBy?.email) && (
+              <div className="flex gap-3 pt-4 border-t border-border/50">
+                <input 
+                  value={newComment}
+                  onChange={e => setNewComment(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleAddComment()}
+                  placeholder="Write a message..."
+                  className="flex-1 bg-muted/30 border border-border rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                />
+                <Button 
+                  onClick={handleAddComment}
+                  disabled={isAddingComment || !newComment.trim()}
+                  className="rounded-xl h-11 px-6 font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20"
+                >
+                  <Send size={16} />
+                </Button>
+              </div>
+            )}
           </section>
         </div>
 

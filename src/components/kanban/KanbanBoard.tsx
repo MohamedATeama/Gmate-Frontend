@@ -11,9 +11,9 @@ import {
 } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import type { Task, TaskStatus } from "@/types/project";
+import { useNavigate } from "react-router-dom";
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanTaskCard } from "./KanbanTaskCard";
-import EditTaskDialog from "@/components/tasks/EditTaskDialog";
 import { useKanbanBoard } from "@/hooks/kanban/useKanbanBoard";
 
 interface Props {
@@ -29,7 +29,7 @@ const COLUMNS: { id: TaskStatus; label: string }[] = [
 ];
 
 export default function KanbanBoard({ projectId, tasks }: Props) {
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const navigate = useNavigate();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function KanbanBoard({ projectId, tasks }: Props) {
                 status={col.id}
                 label={col.label}
                 tasks={tasksByStatus[col.id] || []}
-                onTaskClick={(task: Task) => setEditingTask(task)}
+                onTaskClick={(task: Task) => navigate(`/dashboard/tasks/${task._id}`)}
               />
             ))}
           </SortableContext>
@@ -92,14 +92,6 @@ export default function KanbanBoard({ projectId, tasks }: Props) {
             document.body
           )}
       </DndContext>
-
-      {editingTask && (
-        <EditTaskDialog 
-          task={editingTask} 
-          open={!!editingTask} 
-          onOpenChange={(open: boolean) => !open && setEditingTask(null)} 
-        />
-      )}
     </>
   );
 }

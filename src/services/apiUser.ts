@@ -8,7 +8,7 @@ export const contactApi = async ({
   name: string;
   email: string;
   message: string;
-  }) => {
+}) => {
   try {
     const res = await api.post("/contact", {
       name,
@@ -30,7 +30,7 @@ export const logout = async () => {
     console.log("ERROR", error);
     throw error;
   }
-}
+};
 
 export const getCurrentUser = async () => {
   try {
@@ -40,7 +40,7 @@ export const getCurrentUser = async () => {
     console.log("ERROR", error);
     throw error;
   }
-}
+};
 
 export const updateProfile = async ({
   name,
@@ -59,9 +59,9 @@ export const updateProfile = async ({
     console.log("ERROR", error);
     throw error;
   }
-}
+};
 
-export const updateAvatar = async ({avatar}: {avatar: File}) => {
+export const updateAvatar = async ({ avatar }: { avatar: File }) => {
   try {
     const formData = new FormData();
     formData.append("avatar", avatar);
@@ -71,7 +71,7 @@ export const updateAvatar = async ({avatar}: {avatar: File}) => {
     console.log("ERROR", error);
     throw error;
   }
-}
+};
 
 export const changePassword = async ({
   oldPassword,
@@ -79,7 +79,7 @@ export const changePassword = async ({
   confirmNewPassword,
 }: {
   oldPassword: string;
-    newPassword: string;
+  newPassword: string;
   confirmNewPassword: string;
 }) => {
   try {
@@ -93,4 +93,4 @@ export const changePassword = async ({
     console.log("ERROR", error);
     throw error;
   }
-}
+};
