@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { api } from "@/services/api.mock";
+import { projectService } from "@/services/project.service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,7 +30,7 @@ export default function ProjectDialog() {
   });
 
   const mutation = useMutation({
-    mutationFn: (data: ProjectFormValues) => api.createProject(data),
+    mutationFn: (data: ProjectFormValues) => projectService.createProject(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       toast.success("Project created");

@@ -5,8 +5,6 @@ import {
   Users,
   LogOut,
   CalendarDays,
-  Plus,
-  Settings,
   User,
   Sparkles,
   Loader2,
