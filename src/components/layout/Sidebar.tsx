@@ -131,7 +131,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             <div className="relative shrink-0">
               <div className="h-11 w-11 overflow-hidden rounded-full border-2 border-slate-200 shadow-2xl transition-transform duration-500 group-hover:scale-110 dark:border-white/10">
                 <img
-                  src={user?.avatar.url || "/assets/avatar.jpg"}
+                  src={user?.avatar?.url || "/assets/avatar.jpg"}
                   alt={user?.name}
                   className="h-full w-full object-cover"
                 />
