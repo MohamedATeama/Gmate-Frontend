@@ -8,8 +8,6 @@ import {
   Calendar,
   MoreVertical,
   Users,
-  BarChart3,
-  ArrowUpRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,16 +20,6 @@ import { useProjects } from "@/hooks/useProjects";
 import { Loader2 } from "lucide-react";
 import type { Task } from "@/types/project";
 import { Progress } from "@/components/ui/progress";
-
-const weeklyPulse = [
-  { day: "Mon", count: 12, height: "h-[45%]" },
-  { day: "Tue", count: 18, height: "h-[65%]" },
-  { day: "Wed", count: 24, height: "h-[85%]" },
-  { day: "Thu", count: 16, height: "h-[55%]" },
-  { day: "Fri", count: 28, height: "h-[100%]" },
-  { day: "Sat", count: 8, height: "h-[30%]" },
-  { day: "Sun", count: 5, height: "h-[20%]" },
-];
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -147,59 +135,9 @@ export default function DashboardPage() {
         
         {/* Left Column: Weekly Pulse & Recent Tasks */}
         <div className="lg:col-span-8 space-y-10">
-          
-          {/* Weekly Pulse Chart */}
-          <section className="universal-card overflow-hidden !p-0">
-            <header className="border-b border-slate-200 dark:border-white/5 flex items-center justify-between px-8 py-6">
-              <div className="flex items-center gap-3">
-                <BarChart3 className="text-indigo-500 h-5 w-5" />
-                <h2 className="text-foreground text-lg font-black tracking-tight">Weekly Pulse</h2>
-              </div>
-              <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest border-indigo-500/20 text-indigo-500 bg-indigo-500/5 px-2">
-                Velocity: 85%
-              </Badge>
-            </header>
-            
-            <div className="p-8">
-              <div className="flex items-end justify-between h-48 gap-2 mb-6">
-                {weeklyPulse.map((item) => (
-                  <div key={item.day} className="flex-1 flex flex-col items-center gap-3 group">
-                    <div className="relative w-full flex flex-col items-center justify-end h-full">
-                      {/* Tooltip */}
-                      <div className="absolute -top-8 bg-slate-900 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                        {item.count} Tasks
-                      </div>
-                      <div className={`w-full sm:w-8 rounded-t-xl bg-slate-100 dark:bg-white/5 group-hover:bg-primary/20 transition-all duration-500 relative overflow-hidden ${item.height}`}>
-                        <div className={`absolute bottom-0 w-full bg-linear-to-t from-indigo-600 to-indigo-400 shadow-[0_0_15px_rgba(79,70,229,0.3)] group-hover:from-indigo-500 group-hover:to-cyan-400 transition-all duration-500 h-full`} />
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">
-                      {item.day}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-slate-200 dark:border-white/5 gap-4">
-                <div className="flex items-center gap-8">
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Completion Rate</span>
-                    <span className="text-xl font-black text-slate-900 dark:text-white">94.2%</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Total Hours</span>
-                    <span className="text-xl font-black text-slate-900 dark:text-white">142h</span>
-                  </div>
-                </div>
-                <Button variant="outline" className="rounded-full border-slate-200 dark:border-white/10 text-[10px] font-black uppercase tracking-widest px-6 h-10 group">
-                  Detailed Insights <ArrowUpRight size={14} className="ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </Button>
-              </div>
-            </div>
-          </section>
 
           {/* Recent Tasks List */}
-          <section className="universal-card overflow-hidden !p-0 flex flex-col">
+          <section className="universal-card overflow-hidden p-0! flex flex-col">
             <header className="border-b border-slate-200 dark:border-white/5 flex items-center justify-between px-8 py-6">
               <div className="flex items-center gap-3">
                 <Clock className="text-slate-400 dark:text-slate-500 h-5 w-5" />
@@ -283,25 +221,6 @@ export default function DashboardPage() {
                 </div>
                 <span className="text-slate-900 dark:text-white text-[10px] font-black uppercase tracking-widest">{Math.round(todayGoal)}%</span>
               </div>
-            </div>
-          </div>
-          
-          {/* AI Productivity Block */}
-          <div className="relative group overflow-hidden bg-linear-to-br from-indigo-600 to-purple-700 rounded-[2.5rem] p-8 text-white shadow-2xl">
-            <div className="absolute top-0 right-0 p-4 opacity-10 scale-150 rotate-12">
-              <Zap size={100} fill="white" />
-            </div>
-            <div className="relative z-10 space-y-4">
-              <Badge className="bg-white/20 hover:bg-white/30 text-white border-none text-[8px] font-black uppercase tracking-widest px-2">
-                Gmate Intelligence
-              </Badge>
-              <h4 className="text-xl font-black leading-tight">Focus Peak Detected</h4>
-              <p className="text-white/70 text-sm font-medium leading-relaxed">
-                Your highest output is between 9:00 AM and 11:30 AM. We suggest scheduling deep-work for tomorrow.
-              </p>
-              <button className="text-xs font-black uppercase tracking-[0.2em] flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-all px-4 py-2 rounded-xl">
-                Block Calendar <ArrowUpRight size={14} />
-              </button>
             </div>
           </div>
         </section>

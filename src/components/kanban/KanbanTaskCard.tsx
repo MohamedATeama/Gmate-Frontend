@@ -34,7 +34,7 @@ function KanbanTaskCardComponent({ task, onClick }: Props) {
     transition,
     isDragging,
   } = useSortable({
-    id: task.id,
+    id: task._id,
     data: {
       type: "Task",
       task,

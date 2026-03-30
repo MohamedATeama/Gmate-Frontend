@@ -16,7 +16,7 @@ import {
   verticalListSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import type { Task, TaskStatus } from "../data/tasks";
+import type { Task, TaskStatus } from "@/types/project";
 import TaskCard from "./shared/TaskCard";
 import { useUpdateTask } from "@/hooks/useUpdateTask";
 import { createPortal } from "react-dom";
@@ -27,7 +27,7 @@ interface KanbanBoardProps {
 
 const COLUMNS: { label: string; status: TaskStatus }[] = [
   { label: "To Do", status: "upcoming" },
-  { label: "In Progress", status: "inProgress" },
+  { label: "In Progress", status: "in-progress" },
   { label: "Important", status: "important" },
   { label: "Completed", status: "completed" },
 ];
@@ -58,9 +58,9 @@ function KanbanColumn({ label, status, tasks }: { label: string; status: TaskSta
           isOver ? "bg-accent/40 border-primary/20" : ""
         }`}
       >
-        <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={tasks.map(t => t._id)} strategy={verticalListSortingStrategy}>
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
+            <TaskCard key={task._id} task={task} />
           ))}
         </SortableContext>
         
@@ -110,7 +110,7 @@ export default function KanbanBoard({ initialTasks }: KanbanBoardProps) {
     }
 
     if (newStatus && activeTaskData.status !== newStatus) {
-      updateTask({ id: String(activeTaskData.id), data: { status: newStatus } });
+      updateTask({ id: String(activeTaskData._id), data: { status: newStatus } });
     }
 
     setActiveTask(null);
