@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "sonner";
+import { Toaster } from "react-hot-toast";
 import MainLayout from "./Layouts/MainLayout";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -15,14 +15,16 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgetPassword from "./pages/ForgetPassword";
+import VerifyPasswordCode from "./pages/VerifyPasswordCode";
+import ResetPassword from "./pages/ResetPassword";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import EditProfilePage from "./pages/dashboard/EditProfilePage";
 import { NotificationProvider } from "./context/NotificationContext";
 import TaskDetails from "./pages/TaskDetails";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
-import TeamPage from "./pages/dashboard/TeamPage";
 import TimelinePage from "./pages/dashboard/TimelinePage";
-import SettingsPage from "./pages/dashboard/SettingsPage";
+import TeamPage from "./pages/dashboard/TeamPage";
+// import SettingsPage from "./pages/dashboard/SettingsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,6 +45,11 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forget-password" element={<ForgetPassword />} />
+              <Route
+                path="/verifyPasswordCode"
+                element={<VerifyPasswordCode />}
+              />
+              <Route path="/resetPassword" element={<ResetPassword />} />
               <Route element={<MainLayout />}>
                 <Route index element={<Home />} />
                 <Route path="/about" element={<About />} />
@@ -53,18 +60,41 @@ export default function App() {
                 <Route path="my-tasks" element={<MyTasksPage />} />
                 <Route path="tasks/:id" element={<TaskDetails />} />
                 <Route path="projects" element={<ProjectsDashboard />} />
-                <Route path="projects/:projectId" element={<ProjectDetailsPage />} />
+                <Route
+                  path="projects/:projectId"
+                  element={<ProjectDetailsPage />}
+                />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="profile/edit" element={<EditProfilePage />} />
                 <Route path="notifications" element={<NotificationsPage />} />
-                <Route path="team" element={<TeamPage />} />
                 <Route path="timeline" element={<TimelinePage />} />
-                <Route path="settings" element={<SettingsPage />} />
+                <Route path="team" element={<TeamPage />} />
+                {/* <Route path="settings" element={<SettingsPage />} /> */}
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-          <Toaster position="top-right" richColors />
+          <Toaster
+            position="top-center"
+            gutter={12}
+            containerStyle={{ margin: "8px" }}
+            toastOptions={{
+              success: {
+                duration: 3000,
+              },
+              error: {
+                duration: 5000,
+              },
+              style: {
+                fontSize: "16px",
+                maxWidth: "500px",
+                padding: "16px 24px",
+                borderRadius: "var(--radius)",
+                backgroundColor: "var(--color-card)",
+                color: "var(--color-card-foreground)",
+              },
+            }}
+          />
         </NotificationProvider>
       </QueryClientProvider>
     </ThemeProvider>

@@ -4,14 +4,22 @@ import {
   Zap, 
   LayoutDashboard, 
   Users, 
-  Sparkles, 
- 
-
-
+  Sparkles,
   ChevronRight
 } from "lucide-react";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
+      setToken(accessToken);
+    }
+  }, []);
+
   return (
     <div className="bg-background text-foreground min-h-screen relative overflow-hidden selection:bg-indigo-500/30">
       {/* --- Atmospheric Background --- */}
@@ -46,10 +54,10 @@ export default function Home() {
             {/* CTAs */}
             <div className="mt-14 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
               <Link
-                to="/dashboard"
+                to={token ? "/dashboard" : "/login"}
                 className="bg-indigo-600 text-white hover:bg-indigo-500 group inline-flex h-16 items-center justify-center rounded-2xl px-10 text-lg font-bold shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
               >
-                Go to Dashboard
+                {token ? "Go to Dashboard" : "Login"}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link

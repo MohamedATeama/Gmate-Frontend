@@ -3,34 +3,41 @@ import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useTaskStore } from "@/store/useTaskStore";
-import type { TaskStatus } from "@/data/tasks";
+import { useCreateTask } from "@/hooks/useCreateTask";
+import type { TaskStatus } from "@/types/project";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Props = {
+  projectId?: string;
   onClose: () => void;
 };
 
-export default function AddTaskDialog({ onClose }: Props) {
-  const addTask = useTaskStore((state) => state.addTask);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default function AddTaskDialog({ projectId, onClose }: Props) {
+  const { createTask, isPending: isSubmitting } = useCreateTask();
   const [form, setForm] = useState({
     title: "",
     description: "",
-    status: "upcoming" as TaskStatus,
-    tag: "GENERAL",
-    date: "",
+    status: "to-do" as TaskStatus,
+    priority: "medium" as "low" | "medium" | "high" | "urgent",
+    dueDate: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title.trim()) return;
-    setIsSubmitting(true);
-    await new Promise(r => setTimeout(r, 500));
-    addTask({ ...form, date: form.date || new Date().toLocaleDateString() });
-    setIsSubmitting(false);
-    onClose();
+    
+    const payload = { ...form, project: projectId };
+    if (!payload.dueDate) delete (payload as any).dueDate;
+
+    createTask(
+      payload,
+      {
+        onSuccess: () => onClose(),
+      }
+    );
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -58,12 +65,22 @@ export default function AddTaskDialog({ onClose }: Props) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="tag" className="text-xs font-medium">Tag</Label>
-              <Input id="tag" value={form.tag} onChange={e => setForm({...form, tag: e.target.value})} className="bg-background" />
+              <Label htmlFor="priority" className="text-xs font-medium">Priority</Label>
+              <Select value={form.priority} onValueChange={(val: any) => setForm({...form, priority: val})}>
+                <SelectTrigger id="priority" className="bg-background">
+                  <SelectValue placeholder="Select priority" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="urgent">Urgent</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="date" className="text-xs font-medium">Due Date</Label>
-              <Input id="date" type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})} className="bg-background" />
+              <Input id="date" type="date" value={form.dueDate} onChange={e => setForm({...form, dueDate: e.target.value})} className="bg-background" />
             </div>
           </div>
 

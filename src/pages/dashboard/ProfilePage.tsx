@@ -4,30 +4,17 @@ import {
   ArrowLeft, 
   Settings, 
   Mail, 
-  Globe, 
   Calendar, 
   ShieldCheck, 
   Zap, 
   TrendingUp,
-  MapPin,
-  Link as LinkIcon
+  Globe,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const profile = {
-  name: "Mohamed Algoahry",
-  role: "Lead Software Architect",
-  email: "algoahry@gmate.io",
-  bio: "Crafting digital experiences with a focus on high-performance architecture and visionOS aesthetics. Passionate about building tools that empower teams to achieve Flow State.",
-  location: "Cairo, Egypt",
-  website: "https://algoahry.dev",
-  joined: "March 2024",
-  stats: [
-    { label: "Tasks Completed", value: "142", icon: <Zap className="text-amber-500" /> },
-    { label: "Active Projects", value: "6", icon: <ShieldCheck className="text-emerald-500" /> },
-    { label: "Velocity Score", value: "98%", icon: <TrendingUp className="text-indigo-500" /> },
-  ]
-};
+import { useUser } from "@/hooks/useUser";
+import { useTasks } from "@/hooks/useTasks";
+import { useProjects } from "@/hooks/useProjects";
+import type { Task, Project } from "@/types/project";
 
 const recentSuccess = [
   { name: "VisionOS Dashboard", tag: "CORE", date: "2 days ago", color: "bg-indigo-500" },
@@ -37,6 +24,37 @@ const recentSuccess = [
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const { user, isPending: isUserPending } = useUser();
+  const { tasks, isPending: isTasksPending } = useTasks();
+  const { projects, isLoading: isProjectsPending } = useProjects();
+
+  const isPending = isUserPending || isTasksPending || isProjectsPending;
+
+  if (isPending) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  const completedTasksCount = tasks?.filter((t: Task) => t.status === "completed").length || 0;
+  const activeProjectsCount = projects?.filter((p: Project) => p.status === "active").length || 0;
+  const completedProjectsCount = projects?.filter((p: Project) => p.status === "completed").length || 0;
+
+  const profile = {
+    name: user?.name || "Unknown User",
+    role: user?.role || "Team Member",
+    email: user?.email || "",
+    bio: user?.bio || "No bio provided.",
+    joined: user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "Recently",
+    avatar: user?.avatar.url || "/assets/team/mohamed_algoahry.jpg",
+    stats: [
+      { label: "Tasks Completed", value: completedTasksCount.toString(), icon: <Zap className="text-amber-500" /> },
+      { label: "Active Projects", value: activeProjectsCount.toString(), icon: <ShieldCheck className="text-emerald-500" /> },
+      { label: "Completed Projects", value: completedProjectsCount.toString(), icon: <TrendingUp className="text-indigo-500" /> },
+    ]
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto p-4 md:p-10 space-y-10 animate-fade-in text-slate-900 dark:text-slate-100 pb-32">
@@ -63,7 +81,7 @@ export default function ProfilePage() {
             <div className="relative shrink-0">
               <div className="h-32 w-32 md:h-44 md:w-44 rounded-full border-[6px] border-white dark:border-slate-900 shadow-2xl overflow-hidden">
                 <img 
-                  src="/assets/team/mohamed_algoahry.jpg" 
+                  src={profile.avatar} 
                   alt={profile.name} 
                   className="h-full w-full object-cover transform hover:scale-110 transition-transform duration-700" 
                 />
@@ -78,13 +96,11 @@ export default function ProfilePage() {
                   <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">{profile.name}</h1>
                   <Badge className="bg-indigo-500/10 text-indigo-600 border-none px-3 py-1 text-[10px] font-black uppercase tracking-widest">PRO MEMBER</Badge>
                 </div>
-                <p className="text-indigo-600 dark:text-indigo-400 text-lg font-black uppercase tracking-[0.1em]">{profile.role}</p>
+                <p className="text-indigo-600 dark:text-indigo-400 text-lg font-black uppercase tracking-widest">{profile.role}</p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-6 text-slate-500 dark:text-slate-400 font-bold text-sm">
-                <div className="flex items-center gap-1.5"><MapPin size={16} className="opacity-50" /> {profile.location}</div>
+              <div className="text-slate-500 dark:text-slate-400 font-bold text-sm">
                 <div className="flex items-center gap-1.5"><Calendar size={16} className="opacity-50" /> Joined {profile.joined}</div>
-                <div className="flex items-center gap-1.5"><LinkIcon size={16} className="opacity-50" /> {profile.website.replace('https://', '')}</div>
               </div>
             </div>
 
