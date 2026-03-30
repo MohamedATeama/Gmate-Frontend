@@ -31,7 +31,7 @@ export const projectService = {
     return res.data.data;
   },
 
-  async createProject(data: Omit<Project, "id" | "createdAt">): Promise<Project> {
+  async createProject(data: Partial<Project>): Promise<Project> {
     const res = await api.post("/projects", data);
     return res.data;
   },
