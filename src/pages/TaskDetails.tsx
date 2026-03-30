@@ -52,7 +52,7 @@ export default function TaskDetails() {
   const { user } = useUser();
 
   const handleUploadFiles = () => {
-    if (!files.length) return;
+    if (!files.length || !task) return;
     const formData = new FormData();
     files.forEach(f => formData.append("attachments", f));
     uploadAttachments(
