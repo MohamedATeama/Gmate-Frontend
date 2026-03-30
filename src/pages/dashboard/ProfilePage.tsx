@@ -48,7 +48,7 @@ export default function ProfilePage() {
     email: user?.email || "",
     bio: user?.bio || "No bio provided.",
     joined: user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "Recently",
-    avatar: user?.avatar.url || "/assets/team/mohamed_algoahry.jpg",
+    avatar: user?.avatar?.url || "/assets/team/mohamed_algoahry.jpg",
     stats: [
       { label: "Tasks Completed", value: completedTasksCount.toString(), icon: <Zap className="text-amber-500" /> },
       { label: "Active Projects", value: activeProjectsCount.toString(), icon: <ShieldCheck className="text-emerald-500" /> },
