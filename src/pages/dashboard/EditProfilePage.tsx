@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loading } from "@/components/ui/Loading";
 import { useEffect, useRef, useState } from "react";
 import { useUser } from "@/hooks/useUser";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldValues } from "react-hook-form";
 import { useUpdateProfile } from "@/hooks/useUpdateProfile";
 import { useUpdateAvatar } from "@/hooks/useUpdateAvatar";
 import { useChangePassword } from "@/hooks/useChangePassword";
@@ -77,8 +77,15 @@ export default function EditProfilePage() {
 
   const { changePassword, isPending: isChangingPassword } = useChangePassword();
 
-  function onSubmitChangePassword(data) {
-    changePassword(data, { onSettled: () => reset() });
+  function onSubmitChangePassword(data: FieldValues) {
+    changePassword(
+      {
+        oldPassword: data.oldPassword as string,
+        newPassword: data.newPassword as string,
+        confirmNewPassword: data.confirmNewPassword as string,
+      },
+      { onSettled: () => reset() }
+    );
   }
 
   function handleCancelData() {
@@ -270,7 +277,7 @@ export default function EditProfilePage() {
             />
             {errors.newPassword && (
               <p className="text-xs text-destructive">
-                {errors.newPassword.message}
+                {errors.newPassword.message as string}
               </p>
             )}
           </div>
@@ -290,7 +297,7 @@ export default function EditProfilePage() {
             />
             {errors.confirmNewPassword && (
               <p className="text-xs text-destructive">
-                {errors.confirmNewPassword.message}
+                {errors.confirmNewPassword.message as string}
               </p>
             )}
           </div>

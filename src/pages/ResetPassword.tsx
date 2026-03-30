@@ -2,7 +2,7 @@ import { useResetPassword } from "@/hooks/useResetPassword";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldValues } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export default function ResetPassword() {
@@ -10,13 +10,8 @@ export default function ResetPassword() {
   const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
-  function onSubmit({
-    password,
-    confirmPassword,
-  }: {
-    password: string;
-    confirmPassword: string;
-  }) {
+  function onSubmit(data: FieldValues) {
+    const { password, confirmPassword } = data;
     if (!password || !confirmPassword) {
       toast.error("Please fill in all fields");
       return;
@@ -60,7 +55,7 @@ export default function ResetPassword() {
               required
             />
             <span className="text-destructive text-sm">
-              {errors.password?.message}
+              {errors.password?.message as string}
             </span>
           </div>
           <div className="space-y-2">
@@ -78,7 +73,7 @@ export default function ResetPassword() {
               required
             />
             <span className="text-destructive text-sm">
-              {errors.confirmPassword?.message}
+              {errors.confirmPassword?.message as string}
             </span>
           </div>
           <Button type="submit" className="w-full" disabled={isPending}>
