@@ -7,17 +7,18 @@ import {
   Sparkles,
   ChevronRight
 } from "lucide-react";
-import cookie from "react-cookies";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [token, setToken] = useState("");
 
   useEffect(() => {
-      const accessToken = cookie.load("accessToken");
-  
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
       setToken(accessToken);
-    }, [])
+    }
+  }, []);
 
   return (
     <div className="bg-background text-foreground min-h-screen relative overflow-hidden selection:bg-indigo-500/30">

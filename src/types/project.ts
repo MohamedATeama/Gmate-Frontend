@@ -7,57 +7,77 @@ export const TaskStatusSchema = z.enum([
   "completed",
   "important",
   "upcoming",
+  "overdue",
 ]);
 
 export type TaskStatus = z.infer<typeof TaskStatusSchema>;
 
 export const TaskSchema = z.object({
-  id: z.string(),
-  projectId: z.string(),
+  _id: z.string(),
+  project: z.string().optional(),
   title: z.string(),
   description: z.string().optional(),
   status: TaskStatusSchema,
   priority: z.enum(["low", "medium", "high", "urgent"]),
-  tag: z.string().optional(),
   assignee: z.object({
     name: z.string(),
+    email: z.string(),
+    avatar: z.object({ url: z.string().optional() }).optional(),
+  }).optional(),
+  createdBy: z.object({
+    name: z.string(),
+    email: z.string(),
     avatar: z.string().optional(),
   }),
+  attachments: z.array(z.any()).optional(),
+  comments: z.array(z.any()).optional(),
   dueDate: z.string().optional(),
+  createdAt: z.string().optional(),
 });
 
 export type Task = z.infer<typeof TaskSchema>;
 
 export const ProjectSchema = z.object({
-  id: z.string(),
-  name: z.string().min(3, "Name must be at least 3 characters"),
+  _id: z.string(),
+  title: z.string().min(3, "Name must be at least 3 characters"),
   description: z.string().min(5, "Description must be at least 5 characters"),
   status: z.enum(["active", "on-hold", "completed", "planning"]),
-  progress: z.number().min(0).max(100),
-  members: z.number().min(0),
+  progressPercentage: z.number().min(0).max(100),
+  members: z
+    .array(
+      z.object({
+        user: z.object({
+          _id: z.string(),
+          name: z.string(),
+          email: z.string(),
+          avatar: z.object({
+            url: z.string().optional(),
+          }).optional(),
+        }),
+        role: z.enum(["manager", "developer", "viewer"]).optional(),
+      }).optional(),
+    )
+    .min(0),
+  owner: z.object({
+    name: z.string(),
+    email: z.string(),
+    avatar: z.object({
+      url: z.string().optional(),
+    }).optional(),
+  }),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   createdAt: z.string().optional(),
 });
 
 export type Project = z.infer<typeof ProjectSchema>;
 
 export const ProjectFormSchema = ProjectSchema.omit({
-  id: true,
-  progress: true,
+  _id: true,
+  progressPercentage: true,
   createdAt: true,
+  owner: true,
+  members: true,
 });
 
 export type ProjectFormData = z.infer<typeof ProjectFormSchema>;
-
-export const TeamMemberSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.string().email(),
-  role: z.string(),
-  department: z.string(),
-  capacity: z.number(),
-  projects: z.number(),
-  status: z.string(),
-  avatar: z.string(),
-});
-
-export type TeamMember = z.infer<typeof TeamMemberSchema>;

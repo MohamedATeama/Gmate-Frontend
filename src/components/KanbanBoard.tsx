@@ -8,6 +8,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragStartEvent,
   useDroppable,
 } from "@dnd-kit/core";
 import {
@@ -17,7 +18,7 @@ import {
 } from "@dnd-kit/sortable";
 import type { Task, TaskStatus } from "../data/tasks";
 import TaskCard from "./shared/TaskCard";
-import { useTaskStore } from "@/store/useTaskStore";
+import { useUpdateTask } from "@/hooks/useUpdateTask";
 import { createPortal } from "react-dom";
 
 interface KanbanBoardProps {
@@ -53,7 +54,7 @@ function KanbanColumn({ label, status, tasks }: { label: string; status: TaskSta
       
       <div 
         ref={setNodeRef}
-        className={`flex flex-col gap-3 rounded-[2rem] bg-accent/20 p-2 min-h-[500px] transition-colors border border-transparent ${
+        className={`flex flex-col gap-3 rounded-4xl bg-accent/20 p-2 min-h-[500px] transition-colors border border-transparent ${
           isOver ? "bg-accent/40 border-primary/20" : ""
         }`}
       >
@@ -74,7 +75,7 @@ function KanbanColumn({ label, status, tasks }: { label: string; status: TaskSta
 }
 
 export default function KanbanBoard({ initialTasks }: KanbanBoardProps) {
-  const updateTask = useTaskStore((state) => state.updateTask);
+  const { updateTask } = useUpdateTask();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const sensors = useSensors(
@@ -88,7 +89,7 @@ export default function KanbanBoard({ initialTasks }: KanbanBoardProps) {
     })
   );
 
-  const handleDragStart = (event: any) => {
+  const handleDragStart = (event: DragStartEvent) => {
     setActiveTask(event.active.data.current?.task || null);
   };
 
@@ -109,7 +110,7 @@ export default function KanbanBoard({ initialTasks }: KanbanBoardProps) {
     }
 
     if (newStatus && activeTaskData.status !== newStatus) {
-      updateTask(String(activeTaskData.id), { status: newStatus });
+      updateTask({ id: String(activeTaskData.id), data: { status: newStatus } });
     }
 
     setActiveTask(null);

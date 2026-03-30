@@ -1,5 +1,5 @@
 import api from "@/api/axios";
-import cookie from "react-cookies";
+import Cookies from "js-cookie";
 
 export const login = async ({
   email,
@@ -62,7 +62,7 @@ export const verifyResetPasswordCode = async ({
 }: {
   resetCode: string;
 }) => {
-  const resetToken = cookie.load("resetToken");
+  const resetToken = Cookies.get("resetToken");
   try {
     const response = await api.post(
       `/auth/verifyResetPasswordCode`,
@@ -87,7 +87,7 @@ export const resetPassword = async ({
   password: string;
   confirmPassword: string;
 }) => {
-  const resetToken = cookie.load("resetToken");
+  const resetToken = Cookies.get("resetToken");
   try {
     const response = await api.put(
       `/auth/resetPassword`,
@@ -107,7 +107,7 @@ export const resetPassword = async ({
 };
 
 export const refreshToken = async () => {
-  const refreshToken = cookie.load("refreshToken");
+  const refreshToken = Cookies.get("refreshToken");
   try {
     const response = await api.post(`/auth/refresh`, {
       refreshToken,

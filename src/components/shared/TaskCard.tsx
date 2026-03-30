@@ -1,8 +1,12 @@
 import { useState, memo } from "react";
-import { CalendarDays, MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { CalendarDays, Trash2, Loader2 } from "lucide-react";
 import EditTaskDialog from "@/components/tasks/EditTaskDialog";
+import AssignTaskDialog from "@/components/tasks/AssignTaskDialog";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useDeleteTask } from "@/hooks/useDeleteTask";
+import type { Task } from "@/types/project";
 
 const getStatusStyles = (status: string) => {
   switch (status) {
@@ -20,12 +24,20 @@ const getStatusStyles = (status: string) => {
 };
 
 type TaskCardProps = {
-  task: any; 
+  task: Task; 
 };
 
 function TaskCardComponent({ task }: TaskCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isAssignOpen, setIsAssignOpen] = useState(false);
+  const navigate = useNavigate();
+  const { deleteTask, isPending: isDeleting } = useDeleteTask();
   
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    deleteTask(task._id!);
+  };
+
   const {
     attributes,
     listeners,
@@ -34,7 +46,7 @@ function TaskCardComponent({ task }: TaskCardProps) {
     transition,
     isDragging,
   } = useSortable({
-    id: task.id,
+    id: task._id,
     data: {
       type: "Task",
       task,
@@ -54,8 +66,8 @@ function TaskCardComponent({ task }: TaskCardProps) {
         style={style}
         {...attributes}
         {...listeners}
-        onClick={() => setIsEditOpen(true)}
-        className="universal-card group flex flex-col gap-4 hover:shadow-xl cursor-grab active:cursor-grabbing"
+        onClick={() => navigate(`/dashboard/tasks/${task._id}`)}
+        className="universal-card group flex flex-col gap-4 hover:shadow-xl cursor-pointer"
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 space-y-2 flex-1">
@@ -64,7 +76,7 @@ function TaskCardComponent({ task }: TaskCardProps) {
                 task.status,
               )}`}
             >
-              {task.tag}
+              {task.status}
             </span>
             <h2 className="text-foreground line-clamp-2 text-base font-bold leading-tight group-hover:text-primary transition-colors">
               {task.title}
@@ -73,19 +85,59 @@ function TaskCardComponent({ task }: TaskCardProps) {
               {task.description}
             </p>
           </div>
-          <div className="bg-muted/50 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-            <MoreHorizontal size={14} className="text-muted-foreground" />
-          </div>
+          <button 
+            disabled={isDeleting}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(e);
+            }}
+            className="bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+          >
+            {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+          </button>
         </div>
 
         <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-auto">
-          <p className="text-muted-foreground flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider">
-            <CalendarDays className="opacity-50 h-3.5 w-3.5" />
-            <span>{task.date}</span>
-          </p>
-          <span className="text-primary text-[10px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-            Edit
-          </span>
+          <div className="flex flex-col gap-1.5">
+            <p className="text-muted-foreground flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider">
+              <CalendarDays className="opacity-50 h-3.5 w-3.5" />
+              <span>{task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "No Due Date"}</span>
+            </p>
+            {task.assignee ? (
+              <div className="flex items-center gap-2" title={`Assigned to ${task.assignee.name}`}>
+                {task.assignee.avatar ? (
+                  <img src={task.assignee.avatar.url} alt={task.assignee.name} className="h-5 w-5 rounded-full object-cover border border-border" />
+                ) : (
+                  <div className="h-5 w-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
+                    {task.assignee.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <span className="text-[10px] font-bold text-slate-500 truncate max-w-[80px]">{task.assignee.name.split(" ")[0]}</span>
+              </div>
+            ) : (
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest opacity-60">Unassigned</span>
+            )}
+          </div>
+          <div className="flex gap-2 items-center">
+            <span 
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsAssignOpen(true);
+              }}
+              className="px-2 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-md cursor-pointer text-[10px] font-black uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all opacity-100 block"
+            >
+              Assign
+            </span>
+            <span 
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditOpen(true);
+              }}
+              className="text-primary cursor-pointer text-[10px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all"
+            >
+              Edit
+            </span>
+          </div>
         </div>
       </article>
 
@@ -94,6 +146,15 @@ function TaskCardComponent({ task }: TaskCardProps) {
           task={task}
           open={isEditOpen}
           onOpenChange={setIsEditOpen}
+        />
+      )}
+
+      {isAssignOpen && task._id && (
+        <AssignTaskDialog
+          taskId={task._id}
+          projectId={task.project}
+          open={isAssignOpen}
+          onOpenChange={setIsAssignOpen}
         />
       )}
     </>
