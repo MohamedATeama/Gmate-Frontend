@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import { Outlet, useNavigate } from "react-router-dom";
 import HeadView from "@/components/layout/HeadView";
-import AIAssistant from "@/components/ui/AIAssistant";
 import { Menu, X } from "lucide-react";
 import Cookies from "js-cookie";
 

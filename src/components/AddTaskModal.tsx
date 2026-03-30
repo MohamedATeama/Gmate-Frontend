@@ -3,8 +3,8 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useTaskStore } from "@/store/useTaskStore";
-import type { TaskStatus } from "@/data/tasks";
+import { useCreateTask } from "@/hooks/useCreateTask";
+import type { TaskStatus } from "@/types/project";
 import { Label } from "./ui/label";
 import {
   Select,
@@ -28,7 +28,7 @@ type AddTaskModalProps = {
 };
 
 export default function AddTaskModal({ onClose }: AddTaskModalProps) {
-  const addTask = useTaskStore((state) => state.addTask);
+  const { createTask: addTask } = useCreateTask();
   const [form, setForm] = useState(defaultForm);
   const [error, setError] = useState("");
   const [selectValue, setSelectValue] = useState(form.status);
@@ -68,13 +68,14 @@ export default function AddTaskModal({ onClose }: AddTaskModalProps) {
           year: "numeric",
         });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     addTask({
       title: form.title.trim(),
       description: form.description.trim(),
       status: selectValue,
       tag: form.tag.trim() || "GENERAL",
       date: formattedDate,
-    });
+    } as any);
 
     setForm(defaultForm);
     setError("");
@@ -141,7 +142,7 @@ export default function AddTaskModal({ onClose }: AddTaskModalProps) {
                 name="status"
                 defaultValue="upcoming"
                 value={selectValue}
-                onValueChange={setSelectValue}
+                onValueChange={(val) => setSelectValue(val as TaskStatus)}
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue />
@@ -149,7 +150,7 @@ export default function AddTaskModal({ onClose }: AddTaskModalProps) {
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem value="important">Important</SelectItem>
-                    <SelectItem value="inProgress">In Progress</SelectItem>
+                    <SelectItem value="in-progress">In Progress</SelectItem>
                     <SelectItem value="upcoming">Upcoming</SelectItem>
                     <SelectItem value="completed">Completed</SelectItem>
                   </SelectGroup>

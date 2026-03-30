@@ -6,7 +6,7 @@ export const useDeleteComment = () => {
   const queryClient = useQueryClient();
 
   const { mutate: deleteComment, isPending } = useMutation({
-    mutationFn: ({ taskId, commentId }: { taskId: string | number; commentId: string }) =>
+    mutationFn: ({ commentId }: { taskId: string | number; commentId: string }) =>
       taskService.deleteComment(commentId),
     onSuccess: (_data, variables) => {
       toast.success("Comment deleted");

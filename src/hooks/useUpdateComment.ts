@@ -6,7 +6,7 @@ export const useUpdateComment = () => {
   const queryClient = useQueryClient();
 
   const { mutate: updateComment, isPending } = useMutation({
-    mutationFn: ({ taskId, commentId, text }: { taskId: string | number; commentId: string; text: string }) =>
+    mutationFn: ({ commentId, text }: { taskId: string | number; commentId: string; text: string }) =>
       taskService.updateComment(commentId, text),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });

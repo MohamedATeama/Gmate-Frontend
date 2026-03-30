@@ -41,7 +41,7 @@ export default function Home() {
 
             <h1 className="text-foreground mx-auto max-w-5xl text-5xl font-black tracking-tight sm:text-7xl lg:text-8xl leading-[1.05]">
               Orchestrate your workflow beautifully with{" "}
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-500 via-cyan-500 to-indigo-500 dark:from-indigo-400 dark:via-cyan-400 dark:to-indigo-400 bg-[length:200%_auto] animate-gradient-x">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-500 via-cyan-500 to-indigo-500 dark:from-indigo-400 dark:via-cyan-400 dark:to-indigo-400 bg-size-[200%_auto] animate-gradient-x">
                 Gmate.
               </span>
             </h1>
@@ -75,9 +75,9 @@ export default function Home() {
           <div className="max-w-6xl mx-auto">
             <div className="group relative animate-in fade-in zoom-in-95 duration-1000 delay-300">
               {/* Mockup Glow */}
-              <div className="absolute -inset-1 bg-linear-to-r from-indigo-500 to-cyan-500 rounded-[2rem] blur opacity-10 dark:opacity-20 group-hover:opacity-30 dark:group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+              <div className="absolute -inset-1 bg-linear-to-r from-indigo-500 to-cyan-500 rounded-4xl blur opacity-10 dark:opacity-20 group-hover:opacity-30 dark:group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
               
-              <div className="relative border border-border bg-card/80 backdrop-blur-xl rounded-[2rem] shadow-2xl overflow-hidden hover:-translate-y-2 transition-all duration-500">
+              <div className="relative border border-border bg-card/80 backdrop-blur-xl rounded-4xl shadow-2xl overflow-hidden hover:-translate-y-2 transition-all duration-500">
                 {/* Mac Toolbar */}
                 <div className="flex items-center gap-2 px-6 py-4 border-b border-border bg-muted/50">
                   <div className="flex gap-1.5">

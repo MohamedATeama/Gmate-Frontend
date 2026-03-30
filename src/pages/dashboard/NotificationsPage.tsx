@@ -146,7 +146,7 @@ export default function NotificationsPage() {
 
       <div className="flex flex-col gap-4">
         {visible.length === 0 && (
-          <div className="flex flex-col items-center justify-center rounded-[2rem] border border-dashed border-slate-200 bg-white/30 py-24 text-center dark:border-white/5 dark:bg-white/5">
+          <div className="flex flex-col items-center justify-center rounded-4xl border border-dashed border-slate-200 bg-white/30 py-24 text-center dark:border-white/5 dark:bg-white/5">
             <Bell
               size={40}
               className="mb-4 text-slate-200 dark:text-slate-800"
@@ -163,7 +163,7 @@ export default function NotificationsPage() {
             <div
               key={notif._id}
               onClick={() => markAsRead(notif._id)}
-              className={`group relative flex cursor-pointer gap-5 rounded-[2rem] border p-6 transition-all duration-300 ${
+              className={`group relative flex cursor-pointer gap-5 rounded-4xl border p-6 transition-all duration-300 ${
                 !notif.read
                   ? "border-indigo-500/20 bg-white shadow-md dark:bg-white/5"
                   : "border-slate-200 bg-white/50 opacity-70 hover:opacity-100 dark:border-white/5 dark:bg-transparent"
