@@ -24,10 +24,10 @@ export default function EditTaskModal({ task, onClose }: EditTaskModalProps) {
   const { updateTask } = useUpdateTask();
   const [form, setForm] = useState({
     title: task.title,
-    description: task.description,
+    description: task.description || "",
     status: task.status as TaskStatus,
-    tag: task.tag,
-    date: "",
+    tag: (task as Task & { tag?: string }).tag || "",
+    date: (task as Task & { date?: string }).date || task.dueDate || "",
   });
   const [error, setError] = useState("");
   const [selectValue, setSelectValue] = useState(form.status);
@@ -60,16 +60,15 @@ export default function EditTaskModal({ task, onClose }: EditTaskModalProps) {
           day: "numeric",
           year: "numeric",
         })
-      : task.date;
+      : (task as Task & { date?: string }).date || task.dueDate || "";
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateTask({ id: task._id, data: {
       title: form.title.trim(),
       description: form.description.trim(),
       status: selectValue,
       tag: form.tag.trim() || "GENERAL",
       date: formattedDate,
-    } as any });
+    } as Partial<Task> & { tag?: string; date?: string } });
 
     onClose();
   };
@@ -171,7 +170,7 @@ export default function EditTaskModal({ task, onClose }: EditTaskModalProps) {
               onChange={handleChange}
             />
             <p className="text-muted-foreground mt-1 text-[11px]">
-              Leave empty to keep current date ({task.date}).
+              Leave empty to keep current date ({(task as Task & { date?: string }).date || task.dueDate}).
             </p>
           </div>
 

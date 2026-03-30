@@ -8,6 +8,7 @@ import {
   User,
   Sparkles,
   Loader2,
+  Plus,
 } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -28,7 +29,6 @@ const navItems = [
   { to: "/dashboard/timeline", label: "Timeline", icon: CalendarDays },
   { to: "/dashboard/team", label: "Team", icon: Users },
   { to: "/dashboard/profile", label: "Profile", icon: User },
-  // { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {

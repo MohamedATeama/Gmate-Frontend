@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 
 const projectSchema = z.object({
-  name: z.string().min(3, "Project name must be at least 3 characters"),
+  title: z.string().min(3, "Project title must be at least 3 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   status: z.enum(["active", "on-hold", "completed"]),
 });
@@ -61,8 +61,8 @@ export default function ProjectDialog() {
           
           <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-xs font-medium">Project Name</Label>
-              <Input {...register("name")} placeholder="e.g. Next.js Migration" className="bg-background" />
+              <Label htmlFor="title" className="text-xs font-medium">Project Name</Label>
+              <Input {...register("title")} id="title" placeholder="e.g. Next.js Migration" className="bg-background" />
             </div>
 
             <div className="space-y-1.5">
