@@ -24,12 +24,11 @@ import TaskDetails from "./pages/TaskDetails";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
 import TimelinePage from "./pages/dashboard/TimelinePage";
 import TeamPage from "./pages/dashboard/TeamPage";
-// import SettingsPage from "./pages/dashboard/SettingsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5,
       retry: 1,
     },
   },
@@ -69,7 +68,6 @@ export default function App() {
                 <Route path="notifications" element={<NotificationsPage />} />
                 <Route path="timeline" element={<TimelinePage />} />
                 <Route path="team" element={<TeamPage />} />
-                {/* <Route path="settings" element={<SettingsPage />} /> */}
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
