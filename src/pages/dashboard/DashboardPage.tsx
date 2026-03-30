@@ -16,57 +16,12 @@ import { Badge } from "@/components/ui/badge";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AddTaskDialog from "@/components/tasks/AddTaskDialog";
-
-const kpis = [
-  {
-    label: "Tasks Due Today",
-    value: "14",
-    icon: Calendar,
-    change: "+4 today",
-    color: "bg-primary",
-  },
-  {
-    label: "Active Projects",
-    value: "06",
-    icon: FolderKanban,
-    change: "2 new this week",
-    color: "bg-blue-500",
-  },
-  {
-    label: "Completed this Week",
-    value: "28",
-    icon: CheckSquare,
-    change: "+12 vs last week",
-    color: "bg-emerald-500",
-  },
-];
-
-const recentTasks = [
-  {
-    title: "Project Research",
-    project: "Mobile App Redesign",
-    due: "Today, 5:00 PM",
-    status: "urgent",
-  },
-  {
-    title: "API Endpoint Specs",
-    project: "Backend API v2",
-    due: "Tomorrow",
-    status: "in-progress",
-  },
-  {
-    title: "Client Feedback Loop",
-    project: "Marketing Site",
-    due: "Wed, Oct 13",
-    status: "todo",
-  },
-  {
-    title: "UI Design Audit",
-    project: "Design System",
-    due: "Completed",
-    status: "completed",
-  },
-];
+import { useUser } from "@/hooks/useUser";
+import { useTasks } from "@/hooks/useTasks";
+import { useProjects } from "@/hooks/useProjects";
+import { Loader2 } from "lucide-react";
+import type { Task } from "@/types/project";
+import { Progress } from "@/components/ui/progress";
 
 const weeklyPulse = [
   { day: "Mon", count: 12, height: "h-[45%]" },
@@ -82,6 +37,65 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
+  const { user, isPending: isUserPending } = useUser();
+  const { tasks, isPending: isTasksPending } = useTasks();
+  const { projects, isLoading: isProjectsLoading } = useProjects();
+
+  const isPending = isUserPending || isTasksPending || isProjectsLoading;
+
+  if (isPending) {
+    return (
+      <div className="flex h-[80vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  const tasksDueTodayCount = tasks.filter((t: Task) => t.dueDate?.includes(today)).length;
+  const activeProjectsCount = projects.filter(p => p.status === "active").length;
+  const completedTasksCount = tasks.filter((t: Task) => t.status === "completed").length;
+  const reviewTasksCount = tasks.filter((t: Task) => t.status === "review").length;
+  const todayGoal = tasksDueTodayCount / tasks.length * 100;
+
+  const kpis = [
+    {
+      label: "Tasks Due Today",
+      value: tasksDueTodayCount.toString().padStart(2, "0"),
+      icon: Calendar,
+      change: "today",
+      color: "bg-primary",
+    },
+    {
+      label: "Active Projects",
+      value: activeProjectsCount.toString().padStart(2, "0"),
+      icon: FolderKanban,
+      change: "active",
+      color: "bg-blue-500",
+    },
+    {
+      label: "Completed Tasks",
+      value: completedTasksCount.toString().padStart(2, "0"),
+      icon: CheckSquare,
+      change: "total",
+      color: "bg-emerald-500",
+    },
+  ];
+
+  const recentTasks = [...tasks].slice(0, 4).map((t: Task) => {
+    let mappedStatus = "to-do";
+    if (t.status === "in-progress" || t.status === "review") mappedStatus = "in-progress";
+    if (t.status === "completed") mappedStatus = "completed";
+    if (t.priority === "urgent" || t.priority === "high" || t.status === "overdue" || t.status === "important") mappedStatus = "urgent";
+
+    return {
+      title: t.title,
+      project: t.project ? projects.find(p => p._id === t.project)?.title || "Unknown Project" : "Personal",
+      due: t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "No Due Date",
+      status: mappedStatus,
+    };
+  });
+
   return (
     <div className="flex flex-col space-y-10 animate-fade-in pb-12 px-2 lg:px-6 text-slate-900 dark:text-slate-100">
       {/* Greeting Section */}
@@ -91,11 +105,11 @@ export default function DashboardPage() {
             <Zap size={20} className="fill-primary" />
           </div>
           <h1 className="text-foreground text-3xl font-black tracking-tight lg:text-4xl">
-            Welcome back, Mohamed
+            Welcome back, {user?.name ? user.name.split(' ')[0] : 'User'}
           </h1>
         </div>
         <p className="text-muted-foreground lg:ml-13 max-w-2xl text-sm font-medium leading-relaxed lg:text-base">
-          You have <span className="text-foreground font-bold italic underline decoration-primary/40 underline-offset-4">14 tasks</span> due today and 2 projects waiting for review.
+          You have <span className="text-foreground font-bold italic underline decoration-primary/40 underline-offset-4">{tasksDueTodayCount} tasks</span> due today and {reviewTasksCount} tasks waiting for review.
         </p>
       </header>
 
@@ -265,9 +279,9 @@ export default function DashboardPage() {
               </p>
               <div className="flex items-center gap-2">
                 <div className="h-1.5 flex-1 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                  <div className="bg-primary h-full w-[65%] shadow-[0_0_8px_rgba(79,70,229,0.4)]" />
+                  <Progress value={Math.round(todayGoal)} className="w-full text-primary" />
                 </div>
-                <span className="text-slate-900 dark:text-white text-[10px] font-black uppercase tracking-widest">65%</span>
+                <span className="text-slate-900 dark:text-white text-[10px] font-black uppercase tracking-widest">{Math.round(todayGoal)}%</span>
               </div>
             </div>
           </div>

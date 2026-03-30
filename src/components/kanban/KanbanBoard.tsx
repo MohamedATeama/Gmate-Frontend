@@ -10,61 +10,44 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/services/api.mock";
 import type { Task, TaskStatus } from "@/types/project";
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanTaskCard } from "./KanbanTaskCard";
-import { KanbanColumnSkeleton } from "@/components/ui/Skeleton";
 import EditTaskDialog from "@/components/tasks/EditTaskDialog";
 import { useKanbanBoard } from "@/hooks/kanban/useKanbanBoard";
 
 interface Props {
-  projectId: string;
+  projectId?: string;
+  tasks: Task[];
 }
 
 const COLUMNS: { id: TaskStatus; label: string }[] = [
-  { id: "todo", label: "To Do" },
-  { id: "inProgress", label: "In Progress" },
+  { id: "to-do", label: "To Do" },
+  { id: "in-progress", label: "In Progress" },
   { id: "review", label: "In Review" },
   { id: "completed", label: "Completed" },
 ];
 
-export default function KanbanBoard({ projectId }: Props) {
+export default function KanbanBoard({ projectId, tasks }: Props) {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    const t = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(t);
   }, []);
-
-  const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ["tasks", projectId],
-    queryFn: () => api.getProjectTasks(projectId),
-  });
 
   const { activeTask, sensors, onDragStart, onDragEnd } = useKanbanBoard(projectId);
 
   const tasksByStatus = useMemo(() => {
     return COLUMNS.reduce(
       (acc, col) => {
-        acc[col.id] = tasks.filter((t) => t.status === col.id);
+        acc[col.id] = tasks.filter((t: Task) => t.status === col.id);
         return acc;
       },
       {} as Record<TaskStatus, Task[]>
     );
   }, [tasks]);
-
-  if (isLoading) {
-    return (
-      <div className="flex h-full w-full gap-6 overflow-x-auto pb-6">
-        <KanbanColumnSkeleton />
-        <KanbanColumnSkeleton />
-        <KanbanColumnSkeleton />
-        <KanbanColumnSkeleton />
-      </div>
-    );
-  }
 
   return (
     <>
@@ -84,8 +67,8 @@ export default function KanbanBoard({ projectId }: Props) {
                 key={col.id}
                 status={col.id}
                 label={col.label}
-                tasks={tasksByStatus[col.id]}
-                onTaskClick={(task) => setEditingTask(task)}
+                tasks={tasksByStatus[col.id] || []}
+                onTaskClick={(task: Task) => setEditingTask(task)}
               />
             ))}
           </SortableContext>
@@ -114,7 +97,7 @@ export default function KanbanBoard({ projectId }: Props) {
         <EditTaskDialog 
           task={editingTask} 
           open={!!editingTask} 
-          onOpenChange={(open) => !open && setEditingTask(null)} 
+          onOpenChange={(open: boolean) => !open && setEditingTask(null)} 
         />
       )}
     </>

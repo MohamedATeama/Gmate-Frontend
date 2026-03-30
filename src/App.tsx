@@ -22,9 +22,9 @@ import EditProfilePage from "./pages/dashboard/EditProfilePage";
 import { NotificationProvider } from "./context/NotificationContext";
 import TaskDetails from "./pages/TaskDetails";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
-import TeamPage from "./pages/dashboard/TeamPage";
 import TimelinePage from "./pages/dashboard/TimelinePage";
-import SettingsPage from "./pages/dashboard/SettingsPage";
+import TeamPage from "./pages/dashboard/TeamPage";
+// import SettingsPage from "./pages/dashboard/SettingsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,9 +67,9 @@ export default function App() {
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="profile/edit" element={<EditProfilePage />} />
                 <Route path="notifications" element={<NotificationsPage />} />
-                <Route path="team" element={<TeamPage />} />
                 <Route path="timeline" element={<TimelinePage />} />
-                <Route path="settings" element={<SettingsPage />} />
+                <Route path="team" element={<TeamPage />} />
+                {/* <Route path="settings" element={<SettingsPage />} /> */}
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

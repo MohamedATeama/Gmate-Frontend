@@ -1,5 +1,5 @@
 import axios from "axios";
-import cookie from "react-cookies";
+import Cookies from "js-cookie";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -8,7 +8,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const accessToken = cookie.load("accessToken");
+    const accessToken = Cookies.get("accessToken");
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -28,7 +28,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = cookie.load("refreshToken");
+        const refreshToken = Cookies.get("refreshToken");
         if (refreshToken) {
           const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/auth/refresh`,
@@ -37,16 +37,16 @@ api.interceptors.response.use(
             },
           );
           const newAccessToken = response.data.data;
-          cookie.save("accessToken", newAccessToken, {
+          Cookies.set("accessToken", newAccessToken, {
             path: "/",
             expires: new Date(Date.now() + 1000 * 60 * 60),
           });
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return api(originalRequest);
         }
-      } catch (refreshError) {
-        cookie.remove("accessToken", { path: "/" });
-        cookie.remove("refreshToken", { path: "/" });
+      } catch {
+        Cookies.remove("accessToken", { path: "/" });
+        Cookies.remove("refreshToken", { path: "/" });
         window.location.href = "/login";
       }
     }

@@ -1,11 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { ProjectFormSchema } from "@/types/project";
 import type { ProjectFormData, Project } from "@/types/project";
-import { projectService } from "@/services/project.service";
+import { useCreateProject } from "@/hooks/useCreateProject";
+import { useUpdateProject } from "@/hooks/useUpdateProject";
 import {
   Dialog,
   DialogContent,
@@ -35,7 +34,7 @@ interface EditProjectDialogProps extends ProjectDialogProps {
 }
 
 export const CreateProjectDialog: React.FC<ProjectDialogProps> = ({ open, onOpenChange }) => {
-  const queryClient = useQueryClient();
+  const { createProject, isPending } = useCreateProject();
   const {
     register,
     handleSubmit,
@@ -46,25 +45,22 @@ export const CreateProjectDialog: React.FC<ProjectDialogProps> = ({ open, onOpen
     resolver: zodResolver(ProjectFormSchema),
     defaultValues: {
       status: "planning",
-      members: 0,
-    },
-  });
-
-  const mutation = useMutation({
-    mutationFn: (data: ProjectFormData) => projectService.createProject(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      toast.success("Project created successfully");
-      reset();
-      onOpenChange(false);
-    },
-    onError: () => {
-      toast.error("Failed to create project");
+      startDate: "",
+      endDate: "",
     },
   });
 
   const onSubmit = (data: ProjectFormData) => {
-    mutation.mutate(data);
+    const payload = { ...data };
+    if (!payload.startDate) delete payload.startDate;
+    if (!payload.endDate) delete payload.endDate;
+
+    createProject(payload, {
+      onSuccess: () => {
+        reset();
+        onOpenChange(false);
+      }
+    });
   };
 
   return (
@@ -75,14 +71,14 @@ export const CreateProjectDialog: React.FC<ProjectDialogProps> = ({ open, onOpen
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Project Name</Label>
+            <Label htmlFor="title">Project Title</Label>
             <Input
-              id="name"
-              placeholder="Enter project name"
-              {...register("name")}
-              className={errors.name ? "border-red-500" : ""}
+              id="title"
+              placeholder="Enter project title"
+              {...register("title")}
+              className={errors.title ? "border-red-500" : ""}
             />
-            {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+            {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
@@ -96,21 +92,33 @@ export const CreateProjectDialog: React.FC<ProjectDialogProps> = ({ open, onOpen
               <p className="text-xs text-red-500">{errors.description.message}</p>
             )}
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="members">Team Members</Label>
-            <Input
-              id="members"
-              type="number"
-              {...register("members", { valueAsNumber: true })}
-              className={errors.members ? "border-red-500" : ""}
-            />
-            {errors.members && <p className="text-xs text-red-500">{errors.members.message}</p>}
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                {...register("startDate")}
+                className={errors.startDate ? "border-red-500" : ""}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                {...register("endDate")}
+                className={errors.endDate ? "border-red-500" : ""}
+              />
+            </div>
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
             <Select
               defaultValue="planning"
-              onValueChange={(value) => setValue("status", value as any)}
+              onValueChange={(value) => setValue("status", value as ProjectFormData["status"])}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select status" />
@@ -119,12 +127,13 @@ export const CreateProjectDialog: React.FC<ProjectDialogProps> = ({ open, onOpen
                 <SelectItem value="planning">Planning</SelectItem>
                 <SelectItem value="active">Active</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="on-hold">On Hold</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? "Creating..." : "Create Project"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating..." : "Create Project"}
             </Button>
           </DialogFooter>
         </form>
@@ -138,7 +147,7 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
   onOpenChange,
   project,
 }) => {
-  const queryClient = useQueryClient();
+  const { updateProject, isPending } = useUpdateProject();
   const {
     register,
     handleSubmit,
@@ -146,29 +155,29 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
     formState: { errors },
   } = useForm<ProjectFormData>({
     resolver: zodResolver(ProjectFormSchema),
-    defaultValues: {
-      name: project.name,
+    values: {
+      title: project.title,
       description: project.description,
       status: project.status,
-      members: project.members,
-    },
-  });
-
-  const mutation = useMutation({
-    mutationFn: (data: ProjectFormData) => projectService.updateProject(project.id!, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      queryClient.invalidateQueries({ queryKey: ["project", project.id] });
-      toast.success("Project updated successfully");
-      onOpenChange(false);
-    },
-    onError: () => {
-      toast.error("Failed to update project");
+      startDate: project.startDate ? new Date(project.startDate).toISOString().split('T')[0] : "",
+      endDate: project.endDate ? new Date(project.endDate).toISOString().split('T')[0] : "",
     },
   });
 
   const onSubmit = (data: ProjectFormData) => {
-    mutation.mutate(data);
+    const payload = { ...data };
+    if (!payload.startDate) delete payload.startDate;
+    if (!payload.endDate) delete payload.endDate;
+
+    updateProject({ id: project._id!, data: payload }, {
+      onSuccess: () => {
+        onOpenChange(false);
+      }
+    });
+  };
+
+  const onError = (errors: any) => {
+    console.error("Form validation failed:", errors);
   };
 
   return (
@@ -177,15 +186,15 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Edit Project</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
+        <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="edit-name">Project Name</Label>
+            <Label htmlFor="edit-title">Project Title</Label>
             <Input
-              id="edit-name"
-              {...register("name")}
-              className={errors.name ? "border-red-500" : ""}
+              id="edit-title"
+              {...register("title")}
+              className={errors.title ? "border-red-500" : ""}
             />
-            {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+            {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-description">Description</Label>
@@ -198,21 +207,33 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
               <p className="text-xs text-red-500">{errors.description.message}</p>
             )}
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="members">Team Members</Label>
-            <Input
-              id="members"
-              type="number"
-              {...register("members", { valueAsNumber: true })}
-              className={errors.members ? "border-red-500" : ""}
-            />
-            {errors.members && <p className="text-xs text-red-500">{errors.members.message}</p>}
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-startDate">Start Date</Label>
+              <Input
+                id="edit-startDate"
+                type="date"
+                {...register("startDate")}
+                className={errors.startDate ? "border-red-500" : ""}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-endDate">End Date</Label>
+              <Input
+                id="edit-endDate"
+                type="date"
+                {...register("endDate")}
+                className={errors.endDate ? "border-red-500" : ""}
+              />
+            </div>
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="edit-status">Status</Label>
             <Select
               defaultValue={project.status}
-              onValueChange={(value) => setValue("status", value as any)}
+              onValueChange={(value) => setValue("status", value as ProjectFormData["status"])}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select status" />
@@ -225,8 +246,8 @@ export const EditProjectDialog: React.FC<EditProjectDialogProps> = ({
             </Select>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? "Saving..." : "Save Changes"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
         </form>

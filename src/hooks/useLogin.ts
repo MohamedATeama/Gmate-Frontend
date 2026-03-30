@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { login as loginApi } from "@/services/apiAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import cookie from "react-cookies";
+import Cookies from "js-cookie";
 
 export function useLogin() {
   const queryClient = useQueryClient();
@@ -12,11 +12,11 @@ export function useLogin() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       loginApi({ email, password }),
     onSuccess: (data) => {
-      cookie.save("accessToken", data.data.token.accessToken, {
+      Cookies.set("accessToken", data.data.token.accessToken, {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60),
       });
-      cookie.save("refreshToken", data.data.token.refreshToken, {
+      Cookies.set("refreshToken", data.data.token.refreshToken, {
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
       });

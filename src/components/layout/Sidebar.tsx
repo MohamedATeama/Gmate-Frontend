@@ -16,6 +16,7 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useState } from "react";
 import AddTaskDialog from "@/components/tasks/AddTaskDialog";
 import { useLogout } from "@/hooks/useLogout";
+import { useUser } from "@/hooks/useUser";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -29,12 +30,13 @@ const navItems = [
   { to: "/dashboard/timeline", label: "Timeline", icon: CalendarDays },
   { to: "/dashboard/team", label: "Team", icon: Users },
   { to: "/dashboard/profile", label: "Profile", icon: User },
-  { to: "/dashboard/settings", label: "Settings", icon: Settings },
+  // { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const { logout, isPending } = useLogout();
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+  const { user } = useUser();
 
   const handleQuickTask = () => {
     setIsAddTaskOpen(true);
@@ -131,8 +133,8 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             <div className="relative shrink-0">
               <div className="h-11 w-11 overflow-hidden rounded-full border-2 border-slate-200 shadow-2xl transition-transform duration-500 group-hover:scale-110 dark:border-white/10">
                 <img
-                  src="/assets/team/mohamed_algoahry.jpg"
-                  alt="Mohamed Algoahry"
+                  src={user?.avatar.url || "/assets/avatar.jpg"}
+                  alt={user?.name}
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -140,10 +142,10 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-foreground truncate text-xs font-black tracking-tight uppercase">
-                M. Algoahry
+                {user?.name}
               </p>
               <p className="truncate text-[9px] font-black tracking-widest text-slate-500 uppercase dark:text-slate-500">
-                Architect
+                {user?.role}
               </p>
             </div>
           </Link>

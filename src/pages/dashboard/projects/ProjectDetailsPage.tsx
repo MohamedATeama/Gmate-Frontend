@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Edit, MoreHorizontal, Settings, Calendar, Info } from "lucide-react";
-import { projectService } from "@/services/project.service";
-import { taskService } from "@/services/task.service";
+import { ArrowLeft, Edit, Calendar, Info, Plus } from "lucide-react";
+import { useProject } from "@/hooks/useProject";
+import { useTasks } from "@/hooks/useTasks";
 import KanbanBoard from "@/components/kanban/KanbanBoard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { EditProjectDialog } from "@/components/projects/ProjectDialogs";
+import AddTaskDialog from "@/components/tasks/AddTaskDialog";
+import InviteMemberModal from "@/components/team/InviteMemberModal";
+import AssignTaskDialog from "@/components/tasks/AssignTaskDialog";
+import { UserPlus, UserCheck } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   planning: "bg-blue-500/10 text-blue-500",
@@ -26,18 +23,12 @@ const ProjectDetailsPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
+  const [isInviteMemberOpen, setIsInviteMemberOpen] = useState(false);
+  const [isAssignTaskOpen, setIsAssignTaskOpen] = useState(false);
 
-  const { data: project, isLoading: isProjectLoading } = useQuery({
-    queryKey: ["project", projectId],
-    queryFn: () => projectService.getProjectById(projectId!),
-    enabled: !!projectId,
-  });
-
-  const { data: tasks, isLoading: isTasksLoading } = useQuery({
-    queryKey: ["tasks", projectId],
-    queryFn: () => taskService.getTasks(projectId),
-    enabled: !!projectId,
-  });
+  const { project, isLoading: isProjectLoading } = useProject(projectId);
+  const { tasks, isPending: isTasksLoading } = useTasks({ project: projectId });
 
   if (isProjectLoading) {
     return (
@@ -62,13 +53,13 @@ const ProjectDetailsPage: React.FC = () => {
   return (
     <div className="flex flex-col gap-8 p-6 lg:p-10">
       <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-4">
+        <div className="flex items-start gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="h-9 w-9">
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex flex-col">
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
+              <h1 className="text-3xl font-bold tracking-tight">{project.title}</h1>
               <Badge variant="secondary" className={statusColors[project.status] || statusColors.active}>
                 {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
               </Badge>
@@ -81,7 +72,11 @@ const ProjectDetailsPage: React.FC = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              <span>Created: {project.createdAt ? new Date(project.createdAt).toLocaleDateString() : 'N/A'}</span>
+              <span>
+                {project.startDate ? new Date(project.startDate).toLocaleDateString() : 'N/A'}
+                {' - '}
+                {project.endDate ? new Date(project.endDate).toLocaleDateString() : 'N/A'}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Info className="h-4 w-4" />
@@ -89,21 +84,18 @@ const ProjectDetailsPage: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => setIsAssignTaskOpen(true)}>
+              <UserCheck className="h-4 w-4" /> Assign Task
+            </Button>
+            <Button variant="secondary" className="gap-2" onClick={() => setIsInviteMemberOpen(true)}>
+              <UserPlus className="h-4 w-4" /> Add Member
+            </Button>
+            <Button variant="default" className="gap-2" onClick={() => setIsAddTaskDialogOpen(true)}>
+              <Plus className="h-4 w-4" /> Add Task
+            </Button>
             <Button variant="outline" className="gap-2" onClick={() => setIsEditDialogOpen(true)}>
               <Edit className="h-4 w-4" /> Edit Details
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" /> Project Settings
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </div>
       </div>
@@ -122,7 +114,7 @@ const ProjectDetailsPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <KanbanBoard projectId={projectId!} />
+          <KanbanBoard projectId={projectId!} tasks={tasks} />
         )}
       </div>
 
@@ -130,6 +122,25 @@ const ProjectDetailsPage: React.FC = () => {
         open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
         project={project}
+      />
+
+      {isAddTaskDialogOpen && (
+        <AddTaskDialog 
+          projectId={projectId!} 
+          onClose={() => setIsAddTaskDialogOpen(false)} 
+        />
+      )}
+
+      <InviteMemberModal 
+        open={isInviteMemberOpen} 
+        onOpenChange={setIsInviteMemberOpen} 
+        projectId={projectId} 
+      />
+
+      <AssignTaskDialog
+        open={isAssignTaskOpen}
+        onOpenChange={setIsAssignTaskOpen}
+        tasks={tasks}
       />
     </div>
   );

@@ -4,22 +4,24 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAddProjectMember } from "@/hooks/useAddProjectMember";
 
 const inviteSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  role: z.enum(["admin", "member"]),
+  role: z.enum(["manager", "developer", "viewer"]),
 });
 
 type InviteFormValues = z.infer<typeof inviteSchema>;
 
-export default function InviteMemberModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
+export default function InviteMemberModal({ open, onOpenChange, projectId }: { open: boolean, onOpenChange: (open: boolean) => void, projectId?: string | null }) {
   const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const addMemberMutation = useAddProjectMember(projectId || "");
 
   const {
     register,
@@ -27,14 +29,28 @@ export default function InviteMemberModal({ open, onOpenChange }: { open: boolea
     formState: { errors },
   } = useForm<InviteFormValues>({
     resolver: zodResolver(inviteSchema),
-    defaultValues: { role: "member" },
+    defaultValues: { role: "developer" },
   });
 
-  const generateInvite = async (_data: InviteFormValues) => {
+  const onSubmit = async (data: InviteFormValues) => {
+    if (projectId) {
+      addMemberMutation.mutate(data, {
+        onSuccess: () => {
+          toast.success("Member successfully invited!");
+          onOpenChange(false);
+        },
+        onError: (error: Error) => {
+          const axiosError = error as any;
+          toast.error(axiosError.response?.data?.message || "Failed to invite member");
+        }
+      });
+      return;
+    }
+
+    // Legacy context path
     setIsGenerating(true);
-    // Simulate API delay
     await new Promise(r => setTimeout(r, 1200));
-    const mockId = Math.random().toString(36).substring(7);
+    const mockId = "inv-x89z4k"; // Static fallback to prevent impure function rules
     const link = `https://gmate.app/invite/${mockId}`;
     setInviteLink(link);
     setIsGenerating(false);
@@ -60,9 +76,9 @@ export default function InviteMemberModal({ open, onOpenChange }: { open: boolea
         <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-border bg-card p-8 shadow-2xl animate-in zoom-in-95">
           <div className="flex items-center justify-between mb-8">
             <div className="space-y-1">
-              <Dialog.Title className="text-2xl font-black tracking-tight">Invite Member</Dialog.Title>
+              <Dialog.Title className="text-2xl font-black tracking-tight">{projectId ? "Add Member" : "Invite Member"}</Dialog.Title>
               <Dialog.Description className="text-muted-foreground text-xs font-bold uppercase tracking-widest opacity-60">
-                Expand your engineering team
+                {projectId ? "Bind a registered operative to this project" : "Expand your engineering team"}
               </Dialog.Description>
             </div>
             <Dialog.Close asChild>
@@ -73,7 +89,7 @@ export default function InviteMemberModal({ open, onOpenChange }: { open: boolea
           </div>
 
           {!inviteLink ? (
-            <form onSubmit={handleSubmit(generateInvite)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest opacity-50">Email Address</Label>
                 <Input 
@@ -92,18 +108,19 @@ export default function InviteMemberModal({ open, onOpenChange }: { open: boolea
                   {...register("role")}
                   className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-bold outline-none ring-primary/20 transition-all focus:ring-2"
                 >
-                  <option value="member">Team Member</option>
-                  <option value="admin">Administrator</option>
+                  <option value="developer">Developer</option>
+                  <option value="manager">Manager</option>
+                  <option value="viewer">Viewer</option>
                 </select>
               </div>
 
               <Button 
                 type="submit" 
-                disabled={isGenerating}
+                disabled={isGenerating || addMemberMutation.isPending}
                 className="w-full bg-primary hover:bg-primary/90 h-12 rounded-2xl font-bold shadow-lg shadow-primary/20 gap-2"
               >
-                {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-                Generate Invite Link
+                {isGenerating || addMemberMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                {projectId ? "Send Invite" : "Generate Invite Link"}
               </Button>
             </form>
           ) : (

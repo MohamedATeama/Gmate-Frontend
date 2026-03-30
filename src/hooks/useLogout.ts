@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout as logoutApi } from "@/services/apiUser";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import cookie from "react-cookies";
+import Cookies from "js-cookie";
 
 export function useLogout() {
   const queryClient = useQueryClient();
@@ -11,8 +11,8 @@ export function useLogout() {
   const { mutate: logout, isPending } = useMutation({
     mutationFn: () => logoutApi(),
     onSuccess: () => {
-      cookie.remove("accessToken", { path: "/" });
-      cookie.remove("refreshToken", { path: "/" });
+      Cookies.remove("accessToken", { path: "/" });
+      Cookies.remove("refreshToken", { path: "/" });
       queryClient.removeQueries();
       navigate("/", { replace: true });
     },

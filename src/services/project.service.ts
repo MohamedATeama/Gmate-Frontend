@@ -1,72 +1,56 @@
+import api from "@/api/axios";
 import type { Project } from "../types/project";
 
-// Initial mock data
-let projects: Project[] = [
-  {
-    id: "1",
-    name: "Gmate Rebranding",
-    description: "Modernizing the brand identity and visual language.",
-    status: "active",
-    progress: 65,
-    members: 4,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    name: "Core API Refactor",
-    description: "Migrating to a more scalable architecture.",
-    status: "planning",
-    progress: 20,
-    members: 2,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    name: "Mobile App v2",
-    description: "Building the next generation mobile experience.",
-    status: "completed",
-    progress: 100,
-    members: 6,
-    createdAt: new Date().toISOString(),
-  },
-];
+export interface GetProjectsParams {
+  search?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export interface ProjectsResponse {
+  projects: Project[];
+  length: number;
+  totalPages: number;
+  currentPage: number;
+}
 
 export const projectService = {
-  async getProjects(): Promise<Project[]> {
-    await delay(800);
-    return [...projects];
-  },
-
-  async getProjectById(id: string): Promise<Project | undefined> {
-    await delay(500);
-    return projects.find((p) => p.id === id);
-  },
-
-  async createProject(data: Omit<Project, "id" | "createdAt" | "progress">): Promise<Project> {
-    await delay(1000);
-    const newProject: Project = {
-      ...data,
-      id: Math.random().toString(36).substring(7),
-      progress: 0,
-      createdAt: new Date().toISOString(),
+  async getProjects(params?: GetProjectsParams): Promise<ProjectsResponse> {
+    const res = await api.get("/projects/me", { params });
+    return {
+      projects: res.data.data.projects || [],
+      length: res.data.data.length || 0,
+      totalPages: res.data.data.metadata.totalPages || 1,
+      currentPage: res.data.data.metadata.currentPage || 1,
     };
-    projects.push(newProject);
-    return newProject;
+  },
+
+  async getProjectById(id: string): Promise<Project> {
+    const res = await api.get(`/projects/${id}`);
+    return res.data.data;
+  },
+
+  async createProject(data: Omit<Project, "id" | "createdAt">): Promise<Project> {
+    const res = await api.post("/projects", data);
+    return res.data;
   },
 
   async updateProject(id: string, data: Partial<Project>): Promise<Project> {
-    await delay(1000);
-    const index = projects.findIndex((p) => p.id === id);
-    if (index === -1) throw new Error("Project not found");
-    
-    projects[index] = { ...projects[index], ...data };
-    return projects[index];
+    const res = await api.put(`/projects/${id}`, data);
+    return res.data;
+  },
+
+  async addMember(projectId: string, email: string, role?: string): Promise<Project> {
+    const res = await api.post(`/projects/${projectId}/members`, { email, role });
+    return res.data.data || res.data;
+  },
+
+  async removeMember(projectId: string, memberId: string): Promise<void> {
+    await api.delete(`/projects/${projectId}/members/${memberId}`);
   },
 
   async deleteProject(id: string): Promise<void> {
-    await delay(1000);
-    projects = projects.filter((p) => p.id !== id);
+    await api.delete(`/projects/${id}`);
   },
 };
