@@ -47,14 +47,6 @@
 
 ---
 
-## 📸 Screenshots
-
-> *Place your high-quality VisionOS screenshots here to show off the Glassmorphism!*
-
-
-
----
-
 ## ⚙️ Getting Started
 
 ### Prerequisites
