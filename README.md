@@ -1,7 +1,7 @@
 # 🚀 Gmate: The Prime Edition
 
 <p align="center">
-  <img src="./public/assets/logo.png" alt="Gmate Logo" width="120px" />
+  <img src="./public/assets/logo-dark.png" alt="Gmate Logo" width="120px" />
 </p>
 
 <p align="center">
