@@ -58,6 +58,7 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/algoharyx/Gmate-Frontend.git](https://github.com/algoharyx/Gmate-Frontend.git)
+   git clone https://github.com/MohamedATeama/Gmate-Frontend.git
    cd Gmate-Frontend
+   npm run dev
   
