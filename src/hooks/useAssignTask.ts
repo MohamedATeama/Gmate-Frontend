@@ -10,6 +10,8 @@ export const useAssignTask = () => {
     onSuccess: (_, { taskId }) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["task", String(taskId)] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["project"] });
       toast.success("Task assigned successfully");
     },
     onError: (error: Error) => {
