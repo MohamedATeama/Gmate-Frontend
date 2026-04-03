@@ -30,9 +30,9 @@ const ProjectsDashboard: React.FC = () => {
   });
 
   const projectStats = [
-    { label: "Total Projects", value: length || 0, icon: <BarChart2 size={16} />, color: "text-indigo-500" },
-    { label: "Active", value: projects?.filter((p: Project) => p.status === 'active').length || 0, icon: <Clock size={16} />, color: "text-emerald-500" },
-    { label: "Completed", value: projects?.filter((p: Project) => p.status === 'completed').length || 0, icon: <CheckCircle2 size={16} />, color: "text-slate-400" },
+    { label: "Total Projects", value: useProjects().length, icon: <BarChart2 size={16} />, color: "text-indigo-500" },
+    { label: "Active", value: useProjects({status: 'active'}).length || 0, icon: <Clock size={16} />, color: "text-emerald-500" },
+    { label: "Completed", value: useProjects({status: 'completed'}).length || 0, icon: <CheckCircle2 size={16} />, color: "text-slate-400" },
   ];
 
   return (
