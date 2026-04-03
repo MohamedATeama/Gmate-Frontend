@@ -24,8 +24,9 @@ interface Props {
 const COLUMNS: { id: TaskStatus; label: string }[] = [
   { id: "to-do", label: "To Do" },
   { id: "in-progress", label: "In Progress" },
-  { id: "review", label: "In Review" },
   { id: "completed", label: "Completed" },
+  { id: "important", label: "Important" },
+  { id: "overdue", label: "Over Due" },
 ];
 
 export default function KanbanBoard({ projectId, tasks }: Props) {
