@@ -31,7 +31,11 @@ export function useKanbanBoard(projectId?: string) {
     mutationFn: ({ taskId, status }: { taskId: string; status: TaskStatus }) =>
       taskService.updateTask(taskId, { status }),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: projectId ? ["tasks", projectId] : ["tasks"] });
+      queryClient.invalidateQueries({
+        queryKey: projectId ? ["tasks", projectId] : ["tasks"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["project"] });
       toast.success(`Task moved to ${variables.status.toUpperCase()}`);
     },
     onError: () => {
